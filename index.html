@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Component Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Preview Modal */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .preview-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .preview-content {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .preview-modal.active .preview-content {
+            transform: scale(1);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-title h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .preview-category {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .design { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
+        .development { background: rgba(76, 201, 240, 0.1); color: var(--info); }
+        .marketing { background: rgba(247, 37, 133, 0.1); color: var(--danger); }
+
+        .close-preview {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-preview:hover {
+            background: var(--light-gray);
+            color: var(--danger);
+        }
+
+        .preview-body {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .preview-main {
+            display: flex;
+            gap: 30px;
+        }
+
+        .preview-display {
+            flex: 1;
+            background: #f9fafb;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        #componentFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .preview-details {
+            flex: 1;
+        }
+
+        .preview-details h4 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--dark);
+        }
+
+        .preview-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .preview-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .preview-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .meta-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .preview-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            background: #f9fafb;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        .code-preview {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .preview-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e9f2);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .auth-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .auth-logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header {
+            margin-bottom: 30px;
+        }
+
+        .auth-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .auth-header p {
+            color: var(--gray);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 14px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(135deg, #ff5252, #ff7b38);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Main Content - Initially Hidden */
+        .main-content {
+            display: none;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 10px 15px 10px 40px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 250px;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            width: 300px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-toggle, .user-profile {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover, .user-profile:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(63, 55, 201, 0.9)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Sort Options */
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .sort-options label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .sort-options select {
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        /* Component Grid */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .component-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+
+        .component-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .component-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .component-category {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--light-gray);
+        }
+
+        .component-preview {
+            padding: 0;
+            background: #f9fafb;
+            min-height: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .component-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .component-card:hover .component-preview img {
+            transform: scale(1.05);
+        }
+
+        .component-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fafb;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .component-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid var(--light-gray);
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .version-tag {
+            background: var(--light);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray);
+        }
+
+        .version-tag.new {
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--info);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            margin: 40px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.design { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
+        .stat-icon.development { background: rgba(76, 201, 240, 0.1); color: var(--info); }
+        .stat-icon.marketing { background: rgba(247, 37, 133, 0.1); color: var(--danger); }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+        }
+
+        .admin-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* Updated Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 70px 0 30px;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            opacity: 0.1;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .footer-logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .footer-logo h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-tagline {
+            font-size: 1.1rem;
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+        
+        .social-links a:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .footer-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+        
+        .copyright {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+        
+        .back-to-top {
+            position: absolute;
+            right: 30px;
+            top: -25px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .search-bar input {
+                width: 200px;
+            }
+            
+            .preview-main {
+                flex-direction: column;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .sort-options {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .auth-card {
+                padding: 30px 20px;
+            }
+            
+            .preview-content {
+                padding: 15px;
+            }
+            
+            /* Responsive footer */
+            .footer-links {
+                gap: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .social-links {
+                gap: 15px;
+            }
+            
+            .social-links a {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .footer-tagline {
+                font-size: 1rem;
+            }
+            
+            .back-to-top {
+                right: 20px;
+                top: -20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 1.2rem;
+        }
+        
+        /* Add Component Modal */
+        .add-component-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .add-component-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .add-component-content {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            padding: 30px;
+        }
+        
+        .add-component-modal.active .add-component-content {
+            transform: scale(1);
+        }
+        
+        .add-component-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 25px;
+        }
+        
+        .add-component-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .close-add-component {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-add-component:hover {
+            background: var(--light-gray);
+            color: var(--danger);
+        }
+        
+        .add-component-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+
+        .reset-filters {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .reset-filters:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Section -->
+    <section class="auth-container" id="authSection">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fas fa-code"></i>
+                <h1>CodeWithDivine</h1>
+            </div>
+            
+            <div class="auth-header">
+                <h2>Component Library Access</h2>
+                <p>Enter your password to access premium components</p>
+            </div>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-lock"></i> Unlock Library
+                </button>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i> Incorrect password. Please try again.
+                </div>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Need help? <a href="mailto:support@codewithdivine.com">Contact support</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content - Initially Hidden -->
+    <div class="main-content" id="mainContent">
+        <!-- Admin badge (only shown to admin) -->
+        <div class="admin-badge" id="adminBadge">
+            <i class="fas fa-crown"></i> Admin Mode
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="container header-content">
+                <div class="logo">
+                    <i class="fas fa-code"></i>
+                    <span>CodeWithDivine</span>
+                </div>
+                
+                <div class="nav-links">
+                    <a href="#" class="active">Components</a>
+                    <a href="#">Tutorials</a>
+                    <a href="#">Resources</a>
+                    <a href="#">Community</a>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search components..." id="globalSearch">
+                    </div>
+                    
+                    <div class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Component Library for Developers</h1>
+                <p>Access hundreds of professionally designed, responsive components with clean HTML, CSS, and JavaScript code. Weekly updates with new components and improvements.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-gem"></i> Become a Patron
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-eye"></i> View Components
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="container">
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="all">All Categories</option>
+                        <option value="design">UI Design</option>
+                        <option value="development">Development</option>
+                        <option value="marketing">Marketing</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="tech">Technology</label>
+                    <select id="tech">
+                        <option value="all">All Technologies</option>
+                        <option value="html">HTML/CSS</option>
+                        <option value="js">JavaScript</option>
+                        <option value="react">React</option>
+                        <option value="vue">Vue.js</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date">Date Added</label>
+                    <select id="date">
+                        <option value="all">All Time</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" placeholder="Component name...">
+                </div>
+
+                <!-- Sort Options -->
+                <div class="sort-options">
+                    <label for="sort">Sort By:</label>
+                    <select id="sort">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="name">Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- New Components Section -->
+            <section class="new-components">
+                <div class="section-title">
+                    <h2>New This Week</h2>
+                    <a href="#" class="view-all" id="viewAllNew">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="components-grid" id="newComponentsGrid">
+                    <!-- Component 1 -->
+                    <div class="component-card" data-category="design" data-tech="html" data-date="week">
+                        <div class="component-header">
+                            <h3><i class="fas fa-chart-pie"></i> Analytics Dashboard</h3>
+                            <span class="component-category design">UI Design</span>
+                        </div>
+                        <div class="component-preview">
+                           <img src="components/analytics-dashboard/preview.png" alt="Analytics Dashboard">
+
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag new">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/analytics-dashboard/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/analytics-dashboard/analytics-dashboard.zip"> <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Component 2 -->
+                    <div class="component-card" data-category="development" data-tech="html" data-date="week">
+                        <div class="component-header">
+                            <h3><i class="fas fa-shopping-cart"></i> Login Form1</h3>
+                            <span class="component-category development">Development</span>
+                        </div>
+                        <div class="component-preview">
+                           <img src="components/login-form1/preview.png" alt="Login Form 1">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag new">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/login-form1/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn" >
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/login-form1/login-form1.zip">  <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Component 3 -->
+                    <div class="component-card" data-category="development" data-tech="html" data-date="week">
+                        <div class="component-header">
+                            <h3><i class="fas fa-envelope"></i> Contact Form</h3>
+                            <span class="component-category development">Development</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="components/contact-form1/preview.png" alt="Contact Form 1">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag new">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/contact-form1/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn" >
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/contact-form1/contact-form1.zip">  <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Components Section -->
+            <section class="popular-components">
+                <div class="section-title">
+                    <h2>Most Popular Components</h2>
+                    <a href="#" class="view-all" id="viewAllPopular">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="components-grid" id="popularComponentsGrid">
+                    <!-- Component 1 -->
+                    <div class="component-card" data-category="design" data-tech="html" data-date="month">
+                        <div class="component-header">
+                            <h3><i class="fas fa-columns"></i> Analytics Dashboard</h3>
+                            <span class="component-category design">UI Design</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="components/analytics-dashboard/preview.png" alt="Analytics Dashboard">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/analytics-dashboard/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/analytics-dashboard/analytics-dashboard.zip"> <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Component 2 -->
+                    <div class="component-card" data-category="development" data-tech="js" data-date="month">
+                        <div class="component-header">
+                            <h3><i class="fas fa-user-friends"></i> Login Form1</h3>
+                            <span class="component-category development">Development</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="components/login-form1/preview.png" alt="Login Form1">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/login-form1/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn" >
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/login-form1/login-form1.zip">  <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Component 3 -->
+                    <div class="component-card" data-category="marketing" data-tech="js" data-date="month">
+                        <div class="component-header">
+                            <h3><i class="fas fa-chart-line"></i> Contact Form</h3>
+                            <span class="component-category marketing">Development</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="components/contact-form1/preview.png" alt="Contact Form 1">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag">v1.0 - New!</div>
+                            <div class="component-actions">
+                                <a href="components/contact-form1/index.html" target="_blank" rel="noopener noreferrer"> <button class="btn-icon preview-btn" >
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                                <a href="components/contact-form1/contact-form1.zip">  <button class="btn-icon download-btn" >
+                                    <i class="fas fa-download"></i>
+                                </button></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Components for Filtering Demo 
+                    <div class="component-card" data-category="design" data-tech="react" data-date="week">
+                        <div class="component-header">
+                            <h3><i class="fas fa-calendar"></i> Calendar Widget</h3>
+                            <span class="component-category design">UI Design</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="https://images.unsplash.com/photo-1587560699334-bea93391dcef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Calendar Widget">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag new">v1.1 - New!</div>
+                            <div class="component-actions">
+                                <button class="btn-icon preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon download-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card" data-category="marketing" data-tech="vue" data-date="month">
+                        <div class="component-header">
+                            <h3><i class="fas fa-bullhorn"></i> Marketing Banner</h3>
+                            <span class="component-category marketing">Marketing</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Marketing Banner">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag">v2.0</div>
+                            <div class="component-actions">
+                                <button class="btn-icon preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon download-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card" data-category="development" data-tech="js" data-date="week">
+                        <div class="component-header">
+                            <h3><i class="fas fa-shopping-bag"></i> E-commerce Cart</h3>
+                            <span class="component-category development">Development</span>
+                        </div>
+                        <div class="component-preview">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="E-commerce Cart">
+                        </div>
+                        <div class="component-footer">
+                            <div class="version-tag new">v1.5 - New!</div>
+                            <div class="component-actions">
+                                <button class="btn-icon preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon download-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+              -->
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+            <div class="section-title">
+                <h2>Library Statistics</h2>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon design">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>142</h3>
+                        <p>UI Components</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon development">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>89</h3>
+                        <p>JS Components</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon marketing">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>56</h3>
+                        <p>Marketing Templates</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon design">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Weekly</h3>
+                        <p>New Components</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </main>
+
+        <!-- Updated Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <a class="back-to-top" id="backToTop">
+                    <i class="fas fa-arrow-up"></i>
+                </a>
+                
+                <div class="footer-logo">
+                    <i class="fas fa-code"></i>
+                    <h2>CodeWithDivine</h2>
+                </div>
+                
+                <p class="footer-tagline">
+                    Creating beautiful, functional components for developers and designers. 
+                    Join our community and elevate your projects with premium UI elements.
+                </p>
+                
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" aria-label="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="#" aria-label="Patreon">
+                        <i class="fab fa-patreon"></i>
+                    </a>
+                </div>
+                
+                <div class="footer-divider"></div>
+                
+                <div class="footer-links">
+                    <a href="#">Components</a>
+                    <a href="#">Tutorials</a>
+                    <a href="#">Resources</a>
+                    <a href="#">Community</a>
+                    <a href="#">Documentation</a>
+                    <a href="#">License</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2025 CodeWithDivine Component Library. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set passwords
+            const USER_PASSWORD = "UserAccess2025";
+            const ADMIN_PASSWORD = "DivineAdmin2025";
+            
+            const authSection = document.getElementById('authSection');
+            const mainContent = document.getElementById('mainContent');
+            const loginForm = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Admin elements
+            const adminBadge = document.getElementById('adminBadge');
+            
+            // Filter elements
+            const categoryFilter = document.getElementById('category');
+            const techFilter = document.getElementById('tech');
+            const dateFilter = document.getElementById('date');
+            const searchInput = document.getElementById('search');
+            const sortSelect = document.getElementById('sort');
+            const globalSearch = document.getElementById('globalSearch');
+            
+            // Grid elements
+            const newGrid = document.getElementById('newComponentsGrid');
+            const popularGrid = document.getElementById('popularComponentsGrid');
+            
+            // All components
+            let allComponents = [];
+            
+            // Admin state
+            let isAdmin = false;
+            
+            // Check if user is already authenticated
+            const isAuthenticated = localStorage.getItem('isAuthenticated');
+            const savedIsAdmin = localStorage.getItem('isAdmin');
+            
+            if (isAuthenticated === 'true') {
+                authSection.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Check if admin
+                if (savedIsAdmin === 'true') {
+                    isAdmin = true;
+                    adminBadge.style.display = 'block';
+                } else {
+                    adminBadge.style.display = 'none';
+                }
+            }
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Handle form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const enteredPassword = passwordInput.value.trim();
+                
+                if (enteredPassword === USER_PASSWORD || enteredPassword === ADMIN_PASSWORD) {
+                    // Correct password - show main content
+                    localStorage.setItem('isAuthenticated', 'true');
+                    
+                    // Set admin flag if admin password used
+                    if (enteredPassword === ADMIN_PASSWORD) {
+                        localStorage.setItem('isAdmin', 'true');
+                        isAdmin = true;
+                    }
+                    
+                    // Hide auth section with animation
+                    authSection.querySelector('.auth-card').style.transform = 'translateY(-20px)';
+                    authSection.querySelector('.auth-card').style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        authSection.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        mainContent.style.animation = 'fadeIn 0.5s ease';
+                        
+                        // Show admin controls if admin
+                        if (isAdmin) {
+                            adminBadge.style.display = 'block';
+                        }
+                    }, 400);
+                } else {
+                    // Incorrect password - show error
+                    errorMessage.style.display = 'block';
+                    passwordInput.focus();
+                    
+                    // Shake animation for error
+                    loginForm.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        loginForm.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if(themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('dark-theme');
+                    const icon = themeToggle.querySelector('i');
+                    
+                    if (document.body.classList.contains('dark-theme')) {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                        document.documentElement.style.setProperty('--primary', '#4cc9f0');
+                        document.documentElement.style.setProperty('--secondary', '#4895ef');
+                        document.documentElement.style.setProperty('--dark', '#f8f9fa');
+                        document.documentElement.style.setProperty('--light', '#212529');
+                        document.body.style.backgroundColor = '#121212';
+                        document.body.style.color = '#e0e0e0';
+                    } else {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                        document.documentElement.style.setProperty('--primary', '#4361ee');
+                        document.documentElement.style.setProperty('--secondary', '#3f37c9');
+                        document.documentElement.style.setProperty('--dark', '#212529');
+                        document.documentElement.style.setProperty('--light', '#f8f9fa');
+                        document.body.style.backgroundColor = '#f5f7fa';
+                        document.body.style.color = '#333';
+                    }
+                });
+            }
+            
+            // Back to top functionality
+            const backToTop = document.getElementById('backToTop');
+            
+            if (backToTop) {
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // Show/hide button based on scroll position
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        backToTop.style.opacity = '1';
+                        backToTop.style.visibility = 'visible';
+                    } else {
+                        backToTop.style.opacity = '0';
+                        backToTop.style.visibility = 'hidden';
+                    }
+                });
+                
+                // Initialize state
+                backToTop.style.opacity = '0';
+                backToTop.style.visibility = 'hidden';
+            }
+            
+            // ======================================
+            // Fixed Filtering and Sorting Functionality
+            // ======================================
+            
+            // Initialize components
+            function initComponents() {
+                allComponents = [
+                    ...newGrid.querySelectorAll('.component-card'),
+                    ...popularGrid.querySelectorAll('.component-card')
+                ];
+                
+                // Store original section information
+                allComponents.forEach(comp => {
+                    comp.dataset.originalSection = comp.parentElement.id;
+                });
+            }
+            
+            // Filter and sort components
+            function filterAndSortComponents() {
+                const category = categoryFilter.value;
+                const tech = techFilter.value;
+                const date = dateFilter.value;
+                const searchTerm = searchInput.value.toLowerCase();
+                const globalSearchTerm = globalSearch.value.toLowerCase();
+                const sortOption = sortSelect.value;
+                
+                // Combine search terms
+                const combinedSearch = globalSearchTerm || searchTerm;
+                
+                // Filter components
+                const filteredComponents = allComponents.filter(component => {
+                    const compCategory = component.dataset.category;
+                    const compTech = component.dataset.tech;
+                    const compDate = component.dataset.date;
+                    const compName = component.querySelector('.component-header h3').textContent.toLowerCase();
+                    
+                    // Check category filter
+                    if (category !== 'all' && compCategory !== category) {
+                        return false;
+                    }
+                    
+                    // Check tech filter
+                    if (tech !== 'all' && compTech !== tech) {
+                        return false;
+                    }
+                    
+                    // Check date filter
+                    if (date !== 'all' && compDate !== date) {
+                        return false;
+                    }
+                    
+                    // Check search term
+                    if (combinedSearch && !compName.includes(combinedSearch)) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+                
+                // Sort components
+                switch(sortOption) {
+                    case 'newest':
+                        // Newest based on date added and version
+                        filteredComponents.sort((a, b) => {
+                            const dateCompare = b.dataset.date.localeCompare(a.dataset.date);
+                            if (dateCompare !== 0) return dateCompare;
+                            
+                            const versionA = a.querySelector('.version-tag').textContent;
+                            const versionB = b.querySelector('.version-tag').textContent;
+                            return versionB.localeCompare(versionA);
+                        });
+                        break;
+                    case 'oldest':
+                        // Oldest based on date added and version
+                        filteredComponents.sort((a, b) => {
+                            const dateCompare = a.dataset.date.localeCompare(b.dataset.date);
+                            if (dateCompare !== 0) return dateCompare;
+                            
+                            const versionA = a.querySelector('.version-tag').textContent;
+                            const versionB = b.querySelector('.version-tag').textContent;
+                            return versionA.localeCompare(versionB);
+                        });
+                        break;
+                    case 'popular':
+                        // Sort by section (popular first)
+                        filteredComponents.sort((a, b) => {
+                            const aIsPopular = a.dataset.originalSection === 'popularComponentsGrid' ? 1 : 0;
+                            const bIsPopular = b.dataset.originalSection === 'popularComponentsGrid' ? 1 : 0;
+                            return bIsPopular - aIsPopular;
+                        });
+                        break;
+                    case 'name':
+                        filteredComponents.sort((a, b) => {
+                            const nameA = a.querySelector('.component-header h3').textContent.toLowerCase();
+                            const nameB = b.querySelector('.component-header h3').textContent.toLowerCase();
+                            return nameA.localeCompare(nameB);
+                        });
+                        break;
+                }
+                
+                // Clear grids
+                newGrid.innerHTML = '';
+                popularGrid.innerHTML = '';
+                
+                // Show both sections initially
+                document.querySelector('.new-components').style.display = 'block';
+                document.querySelector('.popular-components').style.display = 'block';
+                
+                // Handle empty state
+                if (filteredComponents.length === 0) {
+                    const emptyState = document.createElement('div');
+                    emptyState.className = 'empty-state';
+                    emptyState.innerHTML = `
+                        <i class="fas fa-search"></i>
+                        <h3>No components found</h3>
+                        <p>Try adjusting your filters or search terms to find what you're looking for.</p>
+                        <button class="reset-filters" id="resetFilters">Reset All Filters</button>
+                    `;
+                    newGrid.appendChild(emptyState);
+                    document.querySelector('.popular-components').style.display = 'none';
+                    
+                    // Add reset functionality
+                    document.getElementById('resetFilters').addEventListener('click', resetFilters);
+                    return;
+                }
+                
+                // Group components into their original sections
+                const newComponents = [];
+                const popularComponents = [];
+                
+                filteredComponents.forEach(component => {
+                    if (component.dataset.originalSection === 'newComponentsGrid') {
+                        newComponents.push(component);
+                    } else {
+                        popularComponents.push(component);
+                    }
+                });
+                
+                // Add components to grids
+                if (newComponents.length > 0) {
+                    newComponents.forEach(component => {
+                        newGrid.appendChild(component);
+                    });
+                } else {
+                    document.querySelector('.new-components').style.display = 'none';
+                }
+                
+                if (popularComponents.length > 0) {
+                    popularComponents.forEach(component => {
+                        popularGrid.appendChild(component);
+                    });
+                } else {
+                    document.querySelector('.popular-components').style.display = 'none';
+                }
+            }
+            
+            // Reset all filters
+            function resetFilters() {
+                categoryFilter.value = 'all';
+                techFilter.value = 'all';
+                dateFilter.value = 'all';
+                searchInput.value = '';
+                globalSearch.value = '';
+                sortSelect.value = 'newest';
+                filterAndSortComponents();
+            }
+            
+            // Set up event listeners for filters
+            categoryFilter.addEventListener('change', filterAndSortComponents);
+            techFilter.addEventListener('change', filterAndSortComponents);
+            dateFilter.addEventListener('change', filterAndSortComponents);
+            searchInput.addEventListener('input', filterAndSortComponents);
+            globalSearch.addEventListener('input', filterAndSortComponents);
+            sortSelect.addEventListener('change', filterAndSortComponents);
+            
+            // Initialize components and filters
+            initComponents();
+            filterAndSortComponents(); // Apply initial filtering
+            
+            // Add animations to the page
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    20%, 60% { transform: translateX(-10px); }
+                    40%, 80% { transform: translateX(10px); }
+                }
+                
+                .auth-card {
+                    animation: fadeIn 0.6s ease;
+                }
+                
+                .component-card {
+                    animation: fadeIn 0.4s ease;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
