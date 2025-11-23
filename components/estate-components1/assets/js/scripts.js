@@ -1,4 +1,6 @@
 
+
+
         // Enhanced Dark Mode Toggle
         const toggleBtn = document.getElementById('themeToggle');
         const body = document.body;
@@ -102,5 +104,14 @@
                     ripple.remove();
                 }, 600);
             });
+        });
+
+        // Handle window resize for responsive adjustments
+        window.addEventListener('resize', function() {
+            // This ensures any layout recalculations happen smoothly
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                document.body.style.overflow = '';
+            }, 100);
         });
     
