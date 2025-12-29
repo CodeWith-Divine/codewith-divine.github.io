@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code with Divine | Custom Development Services</title>
+    <!-- FAVICON ADDED HERE -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --accent-glow: rgba(236, 72, 153, 0.4);
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-dark: #334155;
+            --success: #10b981;
+            --upwork: #14a800;
+            --code-bg: #1e293b;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --transition-fast: all 0.2s ease;
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 30%);
+            min-height: 100vh;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s, width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hover {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(236, 72, 153, 0.2);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: 2rem 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(30deg);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-main {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-sub {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* HAMBURGER MENU BUTTON */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 101;
+        }
+
+        .hamburger-menu span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .hamburger-menu.active span:nth-child(1) {
+            transform: translateY(10.5px) rotate(45deg);
+        }
+
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active span:nth-child(3) {
+            transform: translateY(-10.5px) rotate(-45deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition-fast);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-cta {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Upwork Badge */
+        .upwork-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(20, 168, 0, 0.15);
+            border: 1px solid rgba(20, 168, 0, 0.3);
+            color: #14a800;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Service Hero Section */
+        .service-hero {
+            padding: 6rem 0 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary-dark), var(--secondary));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .service-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: badgeShine 3s infinite;
+        }
+
+        @keyframes badgeShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .service-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+
+        .service-subtitle {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Tech Stack Logos */
+        .tech-stack-section {
+            padding: 2rem 0 4rem;
+            text-align: center;
+        }
+
+        .tech-stack-title {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .tech-stack-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .tech-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .tech-logo:hover {
+            transform: translateY(-5px);
+        }
+
+        .tech-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .tech-logo:hover .tech-icon {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .tech-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .tech-logo.html .tech-icon {
+            color: #e34f26;
+        }
+
+        .tech-logo.css .tech-icon {
+            color: #1572b6;
+        }
+
+        .tech-logo.js .tech-icon {
+            color: #f7df1e;
+        }
+
+        .tech-logo.grid .tech-icon {
+            color: var(--primary);
+        }
+
+        .tech-logo.flexbox .tech-icon {
+            color: var(--accent);
+        }
+
+        .tech-logo.responsive .tech-icon {
+            color: var(--success);
+        }
+
+        /* Upwork Security Note */
+        .upwork-security {
+            background: linear-gradient(135deg, rgba(20, 168, 0, 0.1), rgba(20, 168, 0, 0.05));
+            border: 1px solid rgba(20, 168, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .upwork-security-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .upwork-logo-large {
+            font-size: 3rem;
+            color: #14a800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upwork-security-text {
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .upwork-security-text h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .upwork-security-text p {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .upwork-features {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .upwork-feature {
+            background: rgba(20, 168, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #14a800;
+        }
+
+        /* Services Grid Section */
+        .services-section {
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (min-width: 1200px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .service-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: var(--glass-shadow);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-left: 4px solid var(--primary);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(99, 102, 241, 0.1);
+        }
+
+        .service-header {
+            padding: 2rem 2rem 1rem;
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            color: white;
+        }
+
+        .service-price {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upwork-managed {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(20, 168, 0, 0.1);
+            color: #14a800;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: inline-flex;
+        }
+
+        .service-features {
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .service-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .service-features li {
+            color: var(--gray);
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 1.8rem;
+        }
+
+        .service-features li:before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 0.9rem;
+        }
+
+        .service-action {
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
+            flex: 0 0 auto;
+            text-align: center;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 0;
+            position: relative;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            border-radius: var(--border-radius-lg);
+            margin: 4rem 0;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .cta-subtitle {
+            color: var(--gray);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .primary-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            margin-bottom: 1.5rem;
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .upwork-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(20, 168, 0, 0.15);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid rgba(20, 168, 0, 0.3);
+            margin-top: 1rem;
+        }
+
+        .upwork-cta:hover {
+            background: rgba(20, 168, 0, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .cta-note {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Alternative Contact Methods */
+        .alt-contact {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .alt-contact-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .contact-methods {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .contact-btn.email {
+            background: rgba(85, 85, 85, 0.2);
+        }
+
+        .contact-btn.upwork {
+            background: rgba(20, 168, 0, 0.15);
+            border-color: rgba(20, 168, 0, 0.3);
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Trust Signals Section */
+        .trust-section {
+            padding: 5rem 0;
+            background: var(--glass);
+            border-radius: var(--border-radius-lg);
+            margin: 4rem 0;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .trust-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .trust-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 5rem 0;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 4rem auto 0;
+        }
+
+        .faq-item {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .faq-item:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .faq-question h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--light);
+            margin-right: 2rem;
+        }
+
+        .faq-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            min-width: 20px;
+        }
+
+        .faq-answer {
+            padding: 0 2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+        }
+
+        .faq-answer.active {
+            padding: 0 2rem 1.5rem 2rem;
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Process Timeline */
+        .process-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            border-radius: var(--border-radius-lg);
+            margin: 4rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 4rem auto 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-marker {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+            margin-left: 0;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .timeline-step {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .timeline-desc {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .service-title {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: row !important;
+                margin-left: 60px;
+            }
+            
+            .timeline-marker {
+                left: 30px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .hamburger-menu {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+                z-index: 100;
+                border-left: 1px solid rgba(99, 102, 241, 0.2);
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+                padding: 2rem;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(2, 6, 23, 0.8);
+                backdrop-filter: blur(5px);
+                z-index: 99;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease;
+            }
+            
+            .nav-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .service-title {
+                font-size: 2.5rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .primary-cta {
+                padding: 1.2rem 2.5rem;
+                font-size: 1.1rem;
+            }
+            
+            .tech-stack-grid {
+                gap: 1.5rem;
+            }
+            
+            .tech-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+            
+            .upwork-security-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .upwork-security-text {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .service-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .service-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .primary-cta {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .contact-btn {
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .timeline-content {
+                padding: 1.5rem;
+            }
+            
+            .tech-stack-grid {
+                gap: 1rem;
+            }
+            
+            .tech-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+            
+            .tech-name {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="nav-container">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-main">Code with Divine</div>
+                        <div class="logo-sub">Custom Development</div>
+                    </div>
+                </a>
+                
+                <!-- HAMBURGER MENU BUTTON -->
+                <button class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- NAV OVERLAY -->
+                <div class="nav-overlay" id="nav-overlay"></div>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#process" class="nav-link">Process</a>
+                    <a href="#faq" class="nav-link">FAQ</a>
+                    <a href="#trust" class="nav-link">Why Me</a>
+                    <a href="#cta" class="nav-cta">Get Quote </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Service Hero -->
+    <section class="service-hero">
+        <div class="container">
+            <div class="service-hero-content">
+                <div class="service-badge">
+                    <i class="fas fa-shield-alt"></i> Upwork Managed Projects
+                </div>
+                <h1 class="service-title">💼 Custom Frontend Development</h1>
+                <p class="service-subtitle">Need something unique? Get a custom-built frontend solution with text-only communication. All projects managed on Upwork for your security and peace of mind.</p>
+                
+                <!-- Upwork Security Note -->
+                <div class="upwork-security">
+                    <div class="upwork-security-content">
+                        <div class="upwork-logo-large">
+                            <i class="fab fa-upwork"></i>
+                        </div>
+                        <div class="upwork-security-text">
+                            <h3>All Projects Managed on Upwork</h3>
+                            <p>For your security and peace of mind, all custom development projects are managed through Upwork's secure platform. Benefit from:</p>
+                            <div class="upwork-features">
+                                <span class="upwork-feature">✓ Payment Protection</span>
+                                <span class="upwork-feature">✓ Milestone Payments</span>
+                                <span class="upwork-feature">✓ Dispute Resolution</span>
+                                <span class="upwork-feature">✓ Secure Communication</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Logos -->
+    <section class="tech-stack-section">
+        <div class="container">
+            <h3 class="tech-stack-title">Built With Modern Technologies</h3>
+            <div class="tech-stack-grid">
+                <div class="tech-logo html">
+                    <div class="tech-icon">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <div class="tech-name">HTML5</div>
+                </div>
+                <div class="tech-logo css">
+                    <div class="tech-icon">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <div class="tech-name">CSS3</div>
+                </div>
+                <div class="tech-logo js">
+                    <div class="tech-icon">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <div class="tech-name">JavaScript</div>
+                </div>
+                <div class="tech-logo grid">
+                    <div class="tech-icon">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="tech-name">CSS Grid</div>
+                </div>
+                <div class="tech-logo flexbox">
+                    <div class="tech-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="tech-name">Flexbox</div>
+                </div>
+                <div class="tech-logo responsive">
+                    <div class="tech-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="tech-name">Responsive</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Development Services</h2>
+                <p class="section-subtitle">Choose from our tailored frontend development packages or request a custom solution</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Landing Page Service -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3 class="service-name">🎨 Landing Pages</h3>
+                       <!-- <div class="service-price">From $300</div>-->
+                        <div class="upwork-managed">
+                            <i class="fab fa-upwork"></i> Upwork Managed
+                        </div>
+                    </div>
+                    <div class="service-features">
+                        <ul>
+                            <li>1-3 pages with custom design</li>
+                            <li>Fully responsive on all devices</li>
+                            <li>Optimized for fast loading</li>
+                            <li>3-5 day delivery</li>
+                            <li>Basic SEO setup</li>
+                            <li>Contact form integration</li>
+                            <li><strong>Upwork milestone payments</strong></li>
+                        </ul>
+                    </div>
+                    <div class="service-action">
+                        <a href="#cta" class="primary-cta" style="padding: 1rem 2rem; font-size: 1rem;">
+                            <i class="fas fa-file-alt"></i> Request Quote
+                        </a>
+                        <p style="color: var(--gray); font-size: 0.8rem; margin-top: 0.5rem;">
+                            <i class="fab fa-upwork" style="color: #14a800;"></i> All projects managed on Upwork
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Service -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="service-name">📊 Dashboards & Admin Panels</h3>
+                       <!-- <div class="service-price">From $500</div>-->
+                        <div class="upwork-managed">
+                            <i class="fab fa-upwork"></i> Upwork Managed
+                        </div>
+                    </div>
+                    <div class="service-features">
+                        <ul>
+                            <li>Admin panels with user management</li>
+                            <li>Interactive data tables & filters</li>
+                            <li>Chart.js or D3.js integration</li>
+                            <li>7-10 day delivery</li>
+                            <li>Role-based access control</li>
+                            <li>Data export functionality</li>
+                            <li><strong>Secure Upwork escrow payments</strong></li>
+                        </ul>
+                    </div>
+                    <div class="service-action">
+                        <a href="#cta" class="primary-cta" style="padding: 1rem 2rem; font-size: 1rem;">
+                            <i class="fas fa-file-alt"></i> Request Quote
+                        </a>
+                        <p style="color: var(--gray); font-size: 0.8rem; margin-top: 0.5rem;">
+                            <i class="fab fa-upwork" style="color: #14a800;"></i> Protected by Upwork payment system
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Full Website Service -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="service-name">🌐 Full Websites</h3>
+                        <!--<div class="service-price">From $800</div>-->
+                        <div class="upwork-managed">
+                            <i class="fab fa-upwork"></i> Upwork Managed
+                        </div>
+                    </div>
+                    <div class="service-features">
+                        <ul>
+                            <li>4-10 pages with consistent design</li>
+                            <li>Custom features & functionality</li>
+                            <li>CMS integration options</li>
+                            <li>2-3 week delivery</li>
+                            <li>Advanced SEO optimization</li>
+                            <li>Performance monitoring</li>
+                            <li><strong>Full Upwork project protection</strong></li>
+                        </ul>
+                    </div>
+                    <div class="service-action">
+                        <a href="#cta" class="primary-cta" style="padding: 1rem 2rem; font-size: 1rem;">
+                            <i class="fas fa-file-alt"></i> Request Quote
+                        </a>
+                        <p style="color: var(--gray); font-size: 0.8rem; margin-top: 0.5rem;">
+                            <i class="fab fa-upwork" style="color: #14a800;"></i> Complete project management on Upwork
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Timeline -->
+    <section class="process-section" id="process">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Simple, transparent process with text-only communication and Upwork security</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">1</div>
+                        <h3 class="timeline-title">Request Quote</h3>
+                        <p class="timeline-desc">Fill out our simple form with your project details. No commitment required.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">2</div>
+                        <h3 class="timeline-title">Receive Quote (24hrs)</h3>
+                        <p class="timeline-desc">Get detailed quote via email within 24 hours. Includes timeline, price, and deliverables.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">3</div>
+                        <h3 class="timeline-title">Upwork Setup</h3>
+                        <p class="timeline-desc">We create an Upwork contract with milestone payments for your security.</p>
+                        <div class="upwork-managed" style="margin-top: 0.5rem;">
+                            <i class="fab fa-upwork"></i> Secure payment setup
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">4</div>
+                        <h3 class="timeline-title">Development & Updates</h3>
+                        <p class="timeline-desc">I build your project and send regular updates with screenshots via text/email.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">5</div>
+                        <h3 class="timeline-title">Review & Revisions</h3>
+                        <p class="timeline-desc">You review the work and request changes via text. Unlimited revisions included.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-step">6</div>
+                        <h3 class="timeline-title">Final Delivery</h3>
+                        <p class="timeline-desc">Receive complete source code, documentation, and deployment assistance.</p>
+                        <div class="upwork-managed" style="margin-top: 0.5rem;">
+                            <i class="fab fa-upwork"></i> Payment released upon approval
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <div class="cta-container">
+                <h2 class="cta-title">Ready to Build Your Project?</h2>
+                <p class="cta-subtitle">Get a detailed quote within 24 hours. All projects managed on Upwork for secure payments and project tracking.</p>
+                
+                <a href="https://yourform.typeform.com/to/xxxxx" 
+                   target="_blank"
+                   class="primary-cta">
+                    <i class="fas fa-file-alt"></i>Get Custom Quote (2 minutes)
+                </a>
+                
+                <!--<a href="https://www.upwork.com/freelancers/~01xxxxxxxxxxxxx" 
+                   target="_blank"
+                   class="upwork-cta">
+                    <i class="fab fa-upwork"></i> View My Upwork Profile
+                </a>-->
+                
+                <p class="cta-note">
+                    <i class="fas fa-shield-alt" style="color: #14a800;"></i>
+                    <span>All projects managed on Upwork for payment protection and security</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alternative Contact Methods -->
+   <!-- <section class="alt-contact">
+        <div class="container">
+            <h3 class="alt-contact-title">Prefer Direct Contact?</h3>
+            <p style="color: var(--gray); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Send your project details directly via email. Include: Project type, budget, deadline, and any specific requirements.
+            </p>
+            
+            <div class="contact-methods">
+                <a href="mailto:codewithdivine@gmail.com?subject=Custom Frontend Project&body=Hi, I'm interested in custom development.%0D%0A%0D%0AProject type:%0D%0ABudget:%0D%0ADeadline:%0D%0ADetails:" 
+                   class="contact-btn email">
+                    <i class="fas fa-envelope"></i> 📧 Email Me
+                </a>
+                
+                <a href="https://www.upwork.com/freelancers/~01xxxxxxxxxxxxx" 
+                   target="_blank"
+                   class="contact-btn upwork">
+                    <i class="fab fa-upwork"></i> Message on Upwork
+                </a>
+            </div>
+        </div>
+    </section>-->
+
+    <!-- Trust Signals -->
+    <section class="trust-section" id="trust">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Work With Me</h2>
+                <p class="section-subtitle">Professional frontend development with a focus on communication, quality, and security</p>
+            </div>
+
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <h3 class="trust-title">Fast Delivery</h3>
+                    <p class="trust-desc">3-14 days turnaround depending on project complexity</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">💬</div>
+                    <h3 class="trust-title">Text-Based Communication</h3>
+                    <p class="trust-desc">No calls required. Everything via email/Upwork with screenshots</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <i class="fab fa-upwork" style="color: #14a800; font-size: 2.5rem;"></i>
+                    </div>
+                    <h3 class="trust-title">Upwork Managed</h3>
+                    <p class="trust-desc">All projects on Upwork for secure payments and dispute resolution</p>
+                </div>
+                
+                <div class="trust-item">
+                    <div class="trust-icon">💯</div>
+                    <h3 class="trust-title">Quality Code</h3>
+                    <p class="trust-desc">Clean, commented, and maintainable code with documentation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Common Questions</h2>
+                <p class="section-subtitle">Everything you need to know about custom development with me</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do all projects really go through Upwork?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes, 100%.</strong> All custom development projects are managed through Upwork for your security. This gives you:</p>
+                        <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: var(--gray);">
+                            <li>Payment protection through Upwork's escrow system</li>
+                            <li>Official dispute resolution if needed</li>
+                            <li>Secure communication through Upwork messages</li>
+                            <li>Official contract and terms of service</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How does the Upwork payment system work?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Here's how it works:</p>
+                        <ol style="margin-top: 0.5rem; padding-left: 1.5rem; color: var(--gray);">
+                            <li>We agree on project scope and price</li>
+                            <li>You make payment on Upwork</li>
+                            <li>I start development and send regular updates</li>
+                            <li>You review the work and request revisions if needed</li>
+                            <li>When you're satisfied, you get the final completed project</li>
+                            
+                        </ol>
+                        <p style="margin-top: 0.5rem;">This protects both of us - you only pay for work you approve, and I get paid for work completed.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What if I need changes after delivery?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Unlimited revisions included during the development phase! After final delivery, minor changes are free for 30 days. For major changes or new features, we can discuss a separate agreement.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What technologies do you use?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Modern HTML5, CSS3 (with Grid & Flexbox), Vanilla JavaScript, and popular libraries like Chart.js for data visualization. I focus on lightweight, performant solutions without unnecessary frameworks.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Will my website be responsive?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! All projects are built with a mobile-first approach and tested across devices (mobile, tablet, desktop). I ensure perfect functionality and appearance on all screen sizes.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do you provide hosting or domain setup?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>I provide guidance on hosting setup and can assist with deployment. However, I don't provide hosting services directly. I'll deliver all source code and help you deploy it to your preferred hosting platform.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Code with Divine</h3>
+                    <p>Custom frontend development with focus on communication, quality, and timely delivery. All projects managed on Upwork for security.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.upwork.com/freelancers/~01xxxxxxxxxxxxx" target="_blank" class="social-link" style="background: rgba(20, 168, 0, 0.15);">
+                            <i class="fab fa-upwork"></i>
+                        </a>
+                        <a href="mailto:codewithdivine@gmail.com" class="social-link">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#services">Landing Pages</a></li>
+                        <li><a href="#services">Dashboards</a></li>
+                        <li><a href="#services">Full Websites</a></li>
+                        <li><a href="#services">Custom Features</a></li>
+                        <li><a href="#services">UI/UX Design</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#process">Process</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#trust">Why Choose Me</a></li>
+                        <li><a href="#cta">Get Quote</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:codewithdivine@gmail.com">Email</a></li>
+                        <li><a href="https://www.upwork.com/freelancers/~01xxxxxxxxxxxxx" target="_blank">Upwork Profile</a></li>
+                        <li><a href="#cta">Quote Form</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Code with Divine. Custom Frontend Development Services. All projects managed on Upwork for secure payments and project tracking.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
+                    <i class="fab fa-upwork" style="color: #14a800;"></i> Secure communication and payments through Upwork. Your project details are kept confidential.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.pageX + 'px';
+            cursor.style.top = e.pageY + 'px';
+        });
+
+        // Add hover effect to interactive elements
+        const interactiveElements = document.querySelectorAll('button, a, .service-card, .primary-cta, .contact-btn, .timeline-content, .faq-question, .tech-logo');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
+        });
+
+        // HAMBURGER MENU FUNCTIONALITY
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const navLinks = document.getElementById('nav-links');
+        const navOverlay = document.getElementById('nav-overlay');
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            hamburgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+        
+        // Close mobile menu when clicking a link
+        function closeMobileMenu() {
+            hamburgerMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Event listeners for hamburger menu
+        hamburgerMenu.addEventListener('click', toggleMobileMenu);
+        navOverlay.addEventListener('click', closeMobileMenu);
+        
+        // Close menu when clicking on nav links
+        document.querySelectorAll('.nav-link, .nav-cta').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // FAQ Accordion Functionality
+        function initFAQ() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    const answer = faqItem.querySelector('.faq-answer');
+                    
+                    // Toggle active class on FAQ item
+                    faqItem.classList.toggle('active');
+                    
+                    // Toggle active class on answer
+                    answer.classList.toggle('active');
+                    
+                    // Close other FAQ items
+                    faqQuestions.forEach(otherQuestion => {
+                        if (otherQuestion !== question) {
+                            const otherItem = otherQuestion.parentElement;
+                            const otherAnswer = otherItem.querySelector('.faq-answer');
+                            otherItem.classList.remove('active');
+                            otherAnswer.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            initFAQ();
+            
+            // Add subtle entrance animations to elements
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe service cards
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+            
+            // Observe tech logos
+            document.querySelectorAll('.tech-logo').forEach(logo => {
+                logo.style.opacity = '0';
+                logo.style.transform = 'translateY(20px)';
+                logo.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(logo);
+            });
+            
+            // Observe timeline items
+            document.querySelectorAll('.timeline-content').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(item);
+            });
+            
+            // Observe trust items
+            document.querySelectorAll('.trust-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(item);
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Form submission handling (simulated)
+            const quoteLinks = document.querySelectorAll('a[href*="typeform.com"], .primary-cta');
+            quoteLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').includes('typeform.com')) {
+                        e.preventDefault();
+                        // Simulate form opening - in real implementation, this would open the Typeform
+                        alert('Form submission would open here. In production, this would redirect to Typeform.');
+                    }
+                });
+            });
+        });
+
+        // Add form analytics tracking
+        function trackFormClick(source) {
+            console.log(`Form click tracked from: ${source}`);
+            
+            // Example analytics tracking
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'form_click', {
+                    'event_category': 'Lead Generation',
+                    'event_label': source
+                });
+            }
+        }
+
+        // Add event listeners to form buttons for tracking
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.primary-cta') || e.target.closest('.contact-btn')) {
+                const source = e.target.closest('.primary-cta') ? 'Primary CTA' : 'Contact Button';
+                trackFormClick(source);
+            }
+        });
+    </script>
+</body>
+</html>
