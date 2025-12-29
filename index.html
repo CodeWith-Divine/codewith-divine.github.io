@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code with Divine | Premium Frontend Projects</title>
+    <!-- FAVICON ADDED HERE -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,7 +82,7 @@
             padding: 0 2rem;
         }
 
-        /* Header & Navigation */
+        /* Header & Navigation - HAMBURGER MENU FIXED */
         header {
             padding: 2rem 0;
             position: relative;
@@ -153,6 +155,40 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
+        /* HAMBURGER MENU BUTTON - ADDED */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 101;
+        }
+
+        .hamburger-menu span {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .hamburger-menu.active span:nth-child(1) {
+            transform: translateY(10.5px) rotate(45deg);
+        }
+
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active span:nth-child(3) {
+            transform: translateY(-10.5px) rotate(-45deg);
+        }
+
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -203,7 +239,7 @@
             box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
-        /* Hero Section */
+        /* HERO SECTION - Keep existing styles */
         .hero {
             padding: 6rem 0 4rem;
             position: relative;
@@ -277,6 +313,69 @@
             margin: 0 auto 3rem;
         }
 
+        /* RESPONSIVE DESIGN FOR HAMBURGER MENU */
+        @media (max-width: 768px) {
+            .hamburger-menu {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+                z-index: 100;
+                border-left: 1px solid rgba(99, 102, 241, 0.2);
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+                padding: 2rem;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-link {
+                font-size: 1.2rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .nav-cta {
+                margin-top: 1rem;
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            /* Dark overlay when menu is open */
+            .nav-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(2, 6, 23, 0.8);
+                backdrop-filter: blur(5px);
+                z-index: 99;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease;
+            }
+            
+            .nav-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        /* Keep all existing CSS below this point exactly as it was */
         .tech-pills {
             display: flex;
             justify-content: center;
@@ -323,7 +422,7 @@
             color: var(--accent);
         }
 
-        /* Products Grid - UPDATED for 3 cards per row */
+        /* Products Grid */
         .products-section {
             padding: 4rem 0;
             position: relative;
@@ -372,7 +471,6 @@
             margin-bottom: 6rem;
         }
 
-        /* UPDATED: 3 cards per row on large screens */
         @media (min-width: 1200px) {
             .products-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -953,7 +1051,7 @@
             visibility: hidden;
             transition: var(--transition);
             backdrop-filter: blur(10px);
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .modal-overlay.active {
@@ -962,18 +1060,18 @@
         }
 
         .product-modal {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 1px solid rgba(99, 102, 241, 0.2);
             backdrop-filter: blur(20px);
             border-radius: var(--border-radius-lg);
             width: 100%;
-            max-width: 900px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
             transform: translateY(30px) scale(0.95);
             transition: var(--transition);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(99, 102, 241, 0.15);
         }
 
         .modal-overlay.active .product-modal {
@@ -986,9 +1084,9 @@
             right: 1.5rem;
             background: rgba(255, 255, 255, 0.1);
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             color: white;
             font-size: 1.2rem;
             cursor: pointer;
@@ -997,99 +1095,145 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
+            backdrop-filter: blur(10px);
         }
 
         .modal-close:hover {
             background: rgba(236, 72, 153, 0.3);
             transform: rotate(90deg);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
         }
 
         .modal-header {
-            padding: 3rem 3rem 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 2.5rem 1.5rem;
             position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .modal-title {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             background: linear-gradient(to right, #fff, var(--primary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            line-height: 1.2;
         }
 
         .modal-subtitle {
             color: var(--gray);
-            font-size: 1.1rem;
-            max-width: 600px;
-            line-height: 1.7;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .modal-difficulty {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--accent);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid rgba(236, 72, 153, 0.2);
         }
 
         .modal-content {
-            padding: 2rem 3rem;
+            padding: 1.5rem 2.5rem 2.5rem;
         }
 
         .modal-section {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .modal-section h3 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 1rem;
             color: white;
             display: flex;
             align-items: center;
             gap: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.3);
         }
 
         .modal-section h3 i {
             color: var(--accent);
+            font-size: 1.2rem;
         }
 
-        .modal-section p {
-            color: var(--gray);
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-
-        .modal-features {
+        .modal-features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
             margin-top: 1rem;
         }
 
-        .modal-feature {
-            background: rgba(30, 41, 59, 0.5);
+        .modal-feature-card {
+            background: rgba(30, 41, 59, 0.6);
             padding: 1.2rem;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: flex-start;
-            gap: 0.8rem;
+            gap: 1rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .modal-feature i {
+        .modal-feature-card:hover {
+            transform: translateY(-2px);
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .modal-feature-card i {
             color: var(--success);
             font-size: 1.2rem;
-            margin-top: 0.2rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
         }
 
-        .modal-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            margin-top: 1rem;
+        .modal-feature-card span {
+            color: var(--light);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 768px) {
+            .modal-features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .youtube-note {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-left: 4px solid var(--accent);
+            border: 1px solid rgba(99, 102, 241, 0.2);
             padding: 1.5rem;
-            border-radius: 0 10px 10px 0;
+            border-radius: 12px;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .youtube-note::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
 
         .youtube-note p {
@@ -1097,10 +1241,11 @@
             font-style: italic;
             line-height: 1.7;
             margin: 0;
+            padding-left: 1rem;
         }
 
         .modal-action {
-            padding: 2rem 3rem;
+            padding: 2rem 2.5rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             background: rgba(0, 0, 0, 0.2);
             border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
@@ -1110,7 +1255,29 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Code Preview */
+        .tech-stack-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .tech-chip {
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition-fast);
+        }
+
+        .tech-chip:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
         .code-preview {
             background: var(--code-bg);
             border-radius: var(--border-radius-lg);
@@ -1186,7 +1353,6 @@
         .variable { color: #8be9fd; }
         .operator { color: #ff79c6; }
 
-        /* Lemon Squeeze Integration Info */
         .lemon-integration {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
             border-radius: var(--border-radius-lg);
@@ -1410,7 +1576,6 @@
                 font-size: 0.85rem;
             }
             
-            /* UPDATED: Keep 3 cards per row on very large screens */
             .products-grid {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 1.8rem;
@@ -1427,7 +1592,7 @@
                 padding: 2rem;
             }
             
-            .modal-features {
+            .modal-features-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -1441,10 +1606,7 @@
                 font-size: 2.8rem;
             }
             
-            .nav-links {
-                display: none;
-            }
-            
+            /* HAMBURGER MENU: Remove old display: none rule */
             .products-grid {
                 grid-template-columns: 1fr;
                 gap: 2rem;
@@ -1479,7 +1641,26 @@
                 max-height: 95vh;
             }
             
-            /* Keep original button size on mobile */
+            .modal-header {
+                padding: 2rem 1.5rem 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 1.5rem 1.5rem 2rem;
+            }
+            
+            .modal-title {
+                font-size: 1.8rem;
+            }
+            
+            .modal-action {
+                padding: 1.5rem;
+            }
+            
+            .modal-features-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .details-btn, .lemon-btn {
                 padding: 1rem;
                 font-size: 1rem;
@@ -1488,9 +1669,14 @@
 
         @media (max-width: 480px) {
             .hero-title {
-                font-size: 2.2rem;
+                font-size: 1.8rem;
+                line-height: 1.2;
+                word-break: break-word;
+                hyphens: auto;
             }
-            
+            .hero-content{
+                overflow: hidden;
+            }
             .hero-subtitle {
                 font-size: 1.1rem;
             }
@@ -1521,11 +1707,11 @@
             }
             
             .modal-title {
-                font-size: 2rem;
+                font-size: 1.6rem;
             }
             
             .modal-header, .modal-content, .modal-action {
-                padding: 1.5rem;
+                padding: 1.5rem 1.25rem;
             }
             
             .product-description {
@@ -1560,7 +1746,18 @@
                         <div class="logo-sub">Frontend Projects</div>
                     </div>
                 </a>
-                <div class="nav-links">
+                
+                <!-- HAMBURGER MENU BUTTON ADDED -->
+                <button class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- NAV OVERLAY ADDED FOR MOBILE -->
+                <div class="nav-overlay" id="nav-overlay"></div>
+                
+                <div class="nav-links" id="nav-links">
                     <a href="#projects" class="nav-link">Projects</a>
                     <a href="#features" class="nav-link">Features</a>
                     <a href="#testimonials" class="nav-link">Testimonials</a>
@@ -1572,14 +1769,14 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- HERO SECTION - Rest of the HTML remains exactly the same -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge">
                     <i class="fas fa-lemon"></i> Powered by Lemon Squeeze
                 </div>
-                <h1 class="hero-title">Premium Frontend Projects <br>With <span class="floating">Pay What You Want</span></h1>
+                <h1 class="hero-title">Premium Frontend Projects <br>With <span class="floating">Buy Me a Coffee</span></h1>
                 <p class="hero-subtitle">Master frontend development with production-ready projects. Get high-quality source code using HTML, CSS, JavaScript, CSS Grid & Flexbox. Choose your own price!</p>
                 
                 <div class="lemon-highlight">
@@ -1613,15 +1810,13 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Premium Projects</h2>
-                <p class="section-subtitle">Handcrafted, responsive frontend projects with clean code and modern design patterns. Pay what you want!</p>
+                <p class="section-subtitle">Handcrafted, responsive frontend projects with clean code and modern design patterns. Buy me a coffee!</p>
             </div>
 
             <div class="products-grid" id="products-container">
                 <!-- Products will be dynamically inserted here -->
             </div>
-
-            <!-- Code Preview -->
-           
+        </div>
     </section>
 
     <!-- Lemon Squeeze Integration -->
@@ -1640,8 +1835,8 @@
                     <span>Instant Delivery</span>
                 </div>
                 <div class="lemon-feature">
-                    <i class="fas fa-hand-holding-usd"></i>
-                    <span>Pay What You Want</span>
+                    <i class="fas fa-coffee"></i>
+                    <span>Buy Me a Coffee</span>
                 </div>
                 <div class="lemon-feature">
                     <i class="fas fa-download"></i>
@@ -1762,13 +1957,13 @@
             <div class="faq-container">
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>How does the "Pay What You Want" model work?</h3>
+                        <h3>How does the "Buy Me a Coffee" model work?</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>You can choose any price you want for each project. After clicking "Get via Lemon Squeeze," you'll be redirected to a checkout page where you can set your own price. There's a minimum of $3 to cover processing fees, but you can pay more if you find value in the project.</p>
+                        <p>You can choose any price you want for each project. After clicking "Get via Lemon Squeeze," you'll be redirected to a checkout page where you can set your own price. There's a minimum of $3 to cover processing fees, but you can pay more if you find value in the project. Think of it as buying me a coffee for the time and effort I put into creating these projects!</p>
                     </div>
                 </div>
 
@@ -1798,6 +1993,28 @@
 
                 <div class="faq-item">
                     <div class="faq-question">
+                        <h3>Will this code become outdated?</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                    <p>These projects are built with vanilla HTML, CSS, and JavaScript - stable web standards that have been around for 10+ years. They don't require updates because:</p> 
+
+                        <li>No frameworks (React/Vue) that break with updates</li>
+                        <li>No npm packages with security vulnerabilities</li>
+                         <li>No build tools that need maintenance</li>
+                         <li> Browsers are backwards compatible</li>
+
+                <p>The code you purchase today will work for 5-10+ years minimum without any changes.</p>
+                <p>Think of it like buying a bicycle vs. a car:
+                   <li> - Car (frameworks) = needs regular maintenance</li>
+                     <li>- Bicycle (vanilla code) = just works, forever</li></p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
                         <h3>How do I get access after purchase?</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
@@ -1816,7 +2033,7 @@
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Each project includes detailed documentation to help you get started. If you encounter any issues, you can email support at help@codewithdivine.com. We typically respond within 24 hours and are committed to helping you succeed with our projects.</p>
+                        <p>Each project includes detailed documentation to help you get started. If you encounter any issues, you can email support at codewithdivine@gmail.com. We typically respond within 24 hours and are committed to helping you succeed with our projects.</p>
                     </div>
                 </div>
 
@@ -1828,7 +2045,7 @@
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Due to the digital nature of our products and the "pay what you want" model, we don't offer refunds. However, if you're unsatisfied with a project for any reason, please contact us and we'll work with you to resolve any issues or provide additional support.</p>
+                        <p>Due to the digital nature of our products and the "buy me a coffee" model, we don't offer refunds. However, if you're unsatisfied with a project for any reason, please contact us and we'll work with you to resolve any issues or provide additional support.</p>
                     </div>
                 </div>
             </div>
@@ -1917,7 +2134,7 @@
                         <h3 class="delivery-title">Refund Policy</h3>
                     </div>
                     <div class="delivery-content">
-                        <p>Due to the digital nature of our products and the "pay what you want" model, we generally do not offer refunds. However:</p>
+                        <p>Due to the digital nature of our products and the "buy me a coffee" model, we generally do not offer refunds. However:</p>
                         <ul style="margin-top: 1rem; padding-left: 1.5rem; color: var(--gray);">
                             <li style="margin-bottom: 0.5rem;">If you experience technical issues with downloading or accessing your files, we'll provide support until resolved</li>
                             <li style="margin-bottom: 0.5rem;">If a project doesn't work as described, we'll fix the issue or provide a working alternative</li>
@@ -1984,9 +2201,9 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2025 Code with Divine. All rights reserved. Projects sold under the "Pay What You Want" model. Payments processed securely via Lemon Squeeze.</p>
+                <p>© 2025 Code with Divine. All rights reserved. Projects sold under the "Buy Me a Coffee" model. Payments processed securely via Lemon Squeeze.</p>
                 <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
-                    <i class="fas fa-lock"></i> Security Note: Payments are processed securely by our payment provider (Stripe). Your card details are handled by Stripe and never stored on this site.
+                    <i class="fas fa-lock"></i> Security Note: Payments are processed securely by our payment provider (Lemon Squeeze). Your card details are handled by Lemon Squeeze and never stored on this site.
                 </p>
             </div>
         </div>
@@ -2016,35 +2233,65 @@
             });
         });
 
+        // HAMBURGER MENU FUNCTIONALITY - ADDED
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const navLinks = document.getElementById('nav-links');
+        const navOverlay = document.getElementById('nav-overlay');
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            hamburgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+        
+        // Close mobile menu when clicking a link
+        function closeMobileMenu() {
+            hamburgerMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Event listeners for hamburger menu
+        hamburgerMenu.addEventListener('click', toggleMobileMenu);
+        navOverlay.addEventListener('click', closeMobileMenu);
+        
+        // Close menu when clicking on nav links
+        document.querySelectorAll('.nav-link, .nav-cta').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
         // Product Data with detailed descriptions
         const products = [
             {
                 id: 1,
-                name: "Netflix Clone",
+                name: "Netflix Clone - Complete Source Code",
                 shortDescription: "A pixel-perfect Netflix clone with responsive grid layout, dynamic content loading, and custom video player.",
                 detailedDescription: "Complete source code for my Netflix Clone tutorial project. This is the exact project from my YouTube tutorial. If the video helped you learn, this source code will help you ship faster and customize for your own portfolio.",
                 features: [
-                    "✅ Clean, organized HTML, CSS & JavaScript files",
-                    "✅ All assets (images, icons, video thumbnails)",
-                    "✅ Fully responsive design - mobile, tablet & desktop",
-                    "✅ Comments explaining key sections",
-                    "✅ Dynamic content loading functionality",
-                    "✅ Modern CSS animations and hover effects",
-                    "✅ File structure optimized for learning"
+                    "Clean, organized HTML, CSS & JavaScript files",
+                    "All assets (images, icons, video thumbnails)",
+                    "Fully responsive design - mobile, tablet & desktop",
+                    "Comments explaining key sections",
+                    "Dynamic content loading functionality",
+                    "Modern CSS animations and hover effects",
+                    "File structure optimized for learning"
                 ],
                 whatYouLearn: [
-                    "✅ Building an impressive portfolio piece",
-                    "✅ Learning advanced CSS layouts and positioning",
-                    "✅ Understanding media queries and breakpoints",
-                    "✅ Practicing JavaScript array methods and DOM manipulation",
-                    "✅ Mastering CSS Grid for complex layouts"
+                    "Building an impressive portfolio piece",
+                    "Learning advanced CSS layouts and positioning",
+                    "Understanding media queries and breakpoints",
+                    "Practicing JavaScript array methods and DOM manipulation",
+                    "Mastering CSS Grid for complex layouts"
                 ],
                 tech: ["HTML5", "CSS3", "JavaScript", "CSS Grid", "Flexbox", "Responsive Design", "Media Queries", "Animations"],
-                lemonUrl: "https://lemonsqueezy.com/checkout/buy/YOUR_NETFLIX_CLONE_ID",
+                lemonUrl: "https://codewithdivine.lemonsqueezy.com/checkout/buy/56b70b07-725c-4d5e-945d-3f5efb71d465?discount=0",
                 icon: "fas fa-film",
                 image: "./assets/images/netflix clone.webp",
                 difficulty: "Intermediate",
-                note: "Pay what you think it's worth - every amount helps me create more detailed tutorials!"
+                note: "Buy me a coffee for this project - every amount helps me create more detailed tutorials!"
             },
             {
                 id: 2,
@@ -2052,113 +2299,113 @@
                 shortDescription: "Complete source code for my YouTube Clone tutorial project.",
                 detailedDescription: "Complete source code for my YouTube Clone tutorial project. Get the exact project files from the tutorial to accelerate your learning and customize for your portfolio.",
                 features: [
-                    "✅ Clean, organized HTML, CSS & JavaScript files",
-                    "✅ All assets (images, icons, fonts)",
-                    "✅ Responsive design - works on all devices",
-                    "✅ Comments explaining key sections",
-                    "✅ Ready to customize and deploy",
-                    "✅ File structure optimized for learning"
+                    "Clean, organized HTML, CSS & JavaScript files",
+                    "All assets (images, icons, fonts)",
+                    "Responsive design - works on all devices",
+                    "Comments explaining key sections",
+                    "Ready to customize and deploy",
+                    "File structure optimized for learning"
                 ],
                 whatYouLearn: [
-                    "✅ Building your frontend portfolio",
-                    "✅ Learning modern CSS Grid & Flexbox",
-                    "✅ Understanding responsive design",
-                    "✅ Practicing JavaScript DOM manipulation"
+                    "Building your frontend portfolio",
+                    "Learning modern CSS Grid & Flexbox",
+                    "Understanding responsive design",
+                    "Practicing JavaScript DOM manipulation"
                 ],
                 tech: ["HTML5", "CSS3", "JavaScript", "Flexbox", "CSS Grid", "Responsive Design"],
-                lemonUrl: "https://lemonsqueezy.com/checkout/buy/YOUR_YOUTUBE_CLONE_ID",
+                lemonUrl: "https://codewithdivine.lemonsqueezy.com/checkout/buy/85e369bc-b008-410d-a170-b9cb111f3464?discount=0",
                 icon: "fab fa-youtube",
                 image: "./assets/images/youtube-clone.webp",
                 difficulty: "Intermediate",
-                note: "This is the exact project from my YouTube tutorial. If the video helped you learn, this source code will help you ship faster and customize for your own portfolio. Pay what you think it's worth - every amount helps me create more detailed tutorials!"
+                note: "This is the exact project from my YouTube tutorial. If the video helped you learn, this source code will help you ship faster and customize for your own portfolio. Buy me a coffee for this project - every amount helps me create more detailed tutorials!"
             },
             {
                 id: 3,
-                name: "Project Dashboard",
+                name: "Project Dashboard - Complete Source Code",
                 shortDescription: "A comprehensive project management dashboard with charts, task management, and team collaboration features.",
                 detailedDescription: "Complete source code for my Project Dashboard tutorial. This is the exact project from my YouTube tutorial. If the video helped you learn, this source code will help you ship faster and customize for your own portfolio.",
                 features: [
-                    "✅ Clean, organized HTML, CSS & JavaScript files",
-                    "✅ All assets (icons, charts, images)",
-                    "✅ Responsive dashboard layout - works on all devices",
-                    "✅ Comments explaining key sections",
-                    "✅ Interactive UI components and data visualization",
-                    "✅ Modern sidebar navigation with smooth transitions",
-                    "✅ File structure optimized for learning"
+                    "Clean, organized HTML, CSS & JavaScript files",
+                    "All assets (icons, charts, images)",
+                    "Responsive dashboard layout - works on all devices",
+                    "Comments explaining key sections",
+                    "Interactive UI components and data visualization",
+                    "Modern sidebar navigation with smooth transitions",
+                    "File structure optimized for learning"
                 ],
                 whatYouLearn: [
-                    "✅ Creating professional portfolio projects",
-                    "✅ Learning dashboard design patterns",
-                    "✅ Understanding CSS Grid and Flexbox together",
-                    "✅ Practicing JavaScript for interactive components",
-                    "✅ Building real-world UI layouts",
-                    "✅ Mastering component-based styling"
+                    "Creating professional portfolio projects",
+                    "Learning dashboard design patterns",
+                    "Understanding CSS Grid and Flexbox together",
+                    "Practicing JavaScript for interactive components",
+                    "Building real-world UI layouts",
+                    "Mastering component-based styling"
                 ],
                 tech: ["HTML5", "CSS3", "JavaScript", "CSS Grid", "Chart.js", "UI/UX", "Responsive Design", "Flexbox"],
-                lemonUrl: "https://lemonsqueezy.com/checkout/buy/YOUR_DASHBOARD_ID",
+                lemonUrl: "https://codewithdivine.lemonsqueezy.com/checkout/buy/3f7006d2-2ec0-4565-a9b3-6b73b0766633?discount=0",
                 icon: "fas fa-chart-line",
                 image: "./assets/images/project-dasboard.webp",
                 difficulty: "Advanced",
-                note: "Pay what you think it's worth - every amount helps me create more detailed tutorials!"
+                note: "Buy me a coffee for this project - every amount helps me create more detailed tutorials!"
             },
             {
                 id: 4,
-                name: "Animated Border Effects",
+                name: "Animated Border Effects - Complete Source Code",
                 shortDescription: "15+ stunning border animations and hover effects for buttons, cards, and sections.",
                 detailedDescription: "Complete source code for my Animated Border Effects tutorial project. This is the exact project from my YouTube tutorial. If the video helped you learn, this source code will help you ship faster and customize for your own portfolio.",
                 features: [
-                    "✅ Clean, organized HTML, CSS & JavaScript files",
-                    "✅ Multiple border animation variations",
-                    "✅ Responsive design - works on all devices",
-                    "✅ Comments explaining key sections",
-                    "✅ Reusable CSS animation classes",
-                    "✅ Step-by-step implementation examples",
-                    "✅ File structure optimized for learning"
+                    "Clean, organized HTML, CSS & JavaScript files",
+                    "Multiple border animation variations",
+                    "Responsive design - works on all devices",
+                    "Comments explaining key sections",
+                    "Reusable CSS animation classes",
+                    "Step-by-step implementation examples",
+                    "File structure optimized for learning"
                 ],
                 whatYouLearn: [
-                    "✅ Adding eye-catching effects to your portfolio",
-                    "✅ Learning CSS animations and keyframes",
-                    "✅ Understanding CSS pseudo-elements (::before, ::after)",
-                    "✅ Practicing advanced CSS techniques",
-                    "✅ Creating modern, interactive UI elements",
-                    "✅ Mastering CSS transforms and transitions"
+                    "Adding eye-catching effects to your portfolio",
+                    "Learning CSS animations and keyframes",
+                    "Understanding CSS pseudo-elements (::before, ::after)",
+                    "Practicing advanced CSS techniques",
+                    "Creating modern, interactive UI elements",
+                    "Mastering CSS transforms and transitions"
                 ],
                 tech: ["HTML5", "CSS3", "Animations", "Keyframes", "Transitions", "Gradients", "Pseudo-elements"],
-                lemonUrl: "https://lemonsqueezy.com/checkout/buy/YOUR_BORDER_ANIMATIONS_ID",
+                lemonUrl: "https://codewithdivine.lemonsqueezy.com/checkout/buy/7d7a88dc-3740-4f89-8393-1023fa3358cb?discount=0",
                 icon: "fas fa-border-style",
                 image: "./assets/images/animated-border.webp",
                 difficulty: "Beginner to Intermediate",
-                note: "Pay what you think it's worth - every amount helps me create more detailed tutorials!"
+                note: "Buy me a coffee for this project - every amount helps me create more detailed tutorials!"
             },
             {
                 id: 5,
-                name: "ALL 4 PROJECTS BUNDLE",
+                name: "ALL 4 PROJECTS BUNDLE - Complete Source Code",
                 shortDescription: "Complete source code for ALL 4 of my tutorial projects - Best Value!",
                 detailedDescription: "Complete source code for ALL 4 of my tutorial projects - Best Value! These are the exact projects from my YouTube tutorials. If the videos helped you learn, this complete bundle will help you ship faster, customize for your portfolio, and demonstrate versatility to potential employers or clients.",
                 features: [
-                    "✅ YouTube Clone - Complete source code",
-                    "✅ Netflix Clone - Complete source code",
-                    "✅ Project Dashboard - Complete source code",
-                    "✅ Animated Border Effects - Complete source code",
-                    "✅ All organized in separate folders",
-                    "✅ Every asset, icon, and image file included",
-                    "✅ Comprehensive comments throughout",
-                    "✅ Ready to customize and deploy"
+                    "YouTube Clone - Complete source code",
+                    "Netflix Clone - Complete source code",
+                    "Project Dashboard - Complete source code",
+                    "Animated Border Effects - Complete source code",
+                    "All organized in separate folders",
+                    "Every asset, icon, and image file included",
+                    "Comprehensive comments throughout",
+                    "Ready to customize and deploy"
                 ],
                 whatYouLearn: [
-                    "✅ Building a complete frontend portfolio quickly",
-                    "✅ Learning multiple layout techniques",
-                    "✅ Practicing diverse JavaScript patterns",
-                    "✅ Understanding different CSS methodologies",
-                    "✅ Showcasing range in your developer portfolio",
-                    "✅ Fast-tracking your frontend skills"
+                    "Building a complete frontend portfolio quickly",
+                    "Learning multiple layout techniques",
+                    "Practicing diverse JavaScript patterns",
+                    "Understanding different CSS methodologies",
+                    "Showcasing range in your developer portfolio",
+                    "Fast-tracking your frontend skills"
                 ],
                 tech: ["HTML5", "CSS3", "JavaScript", "CSS Grid", "Flexbox", "Chart.js", "Animations", "Responsive Design"],
-                lemonUrl: "https://lemonsqueezy.com/checkout/buy/YOUR_BUNDLE_ID",
+                lemonUrl: "https://codewithdivine.lemonsqueezy.com/checkout/buy/c1311bc0-b924-403c-bf62-bdc28b2bf62a?discount=0",
                 icon: "fas fa-gift",
                 image: "./assets/images/project-bundle.webp",
                 difficulty: "All Levels",
-                note: "Pay what you think it's worth - every amount helps me create more detailed tutorials!"
+                note: "Buy me a coffee for this bundle - every amount helps me create more detailed tutorials!"
             }
         ];
 
@@ -2186,8 +2433,8 @@
                     
                     <div class="product-action">
                         <div class="pricing-model">
-                            <i class="fas fa-hand-holding-usd"></i>
-                            <span>Pay What You Want</span>
+                            <i class="fas fa-coffee"></i>
+                            <span>Buy Me a Coffee</span>
                         </div>
                         <div class="btn-group">
                             <button class="details-btn" data-id="${product.id}">
@@ -2201,7 +2448,7 @@
                         </div>
                         <div class="security-note">
                             <i class="fas fa-lock"></i>
-                            <span>Payments processed securely by Stripe. Card details never stored on this site.</span>
+                            <span>Payments processed securely by Lemon Squeeze. Card details never stored on this site.</span>
                         </div>
                     </div>
                 `;
@@ -2223,153 +2470,75 @@
         function openProductModal(product) {
             const modal = document.createElement('div');
             
-            // Check if it's a special product (YouTube Clone has special modal)
-            if (product.id === 2) {
-                modal.className = 'product-modal';
-                modal.innerHTML = `
-                    <button class="modal-close" id="modal-close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="modal-header">
-                        <h2 class="modal-title">${product.name}</h2>
-                        <p class="modal-subtitle">${product.detailedDescription}</p>
-                        <div class="modal-tech">
-                            ${product.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                            <span class="tech-tag" style="background: rgba(236, 72, 153, 0.2); color: var(--accent);">
-                                <i class="fas fa-signal"></i> ${product.difficulty}
-                            </span>
+            modal.className = 'product-modal';
+            modal.innerHTML = `
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="modal-header">
+                    <h2 class="modal-title">${product.name}</h2>
+                    <p class="modal-subtitle">${product.detailedDescription}</p>
+                    
+                    <div class="modal-meta">
+                        <div class="modal-difficulty">
+                            <i class="fas fa-signal"></i> ${product.difficulty}
                         </div>
                     </div>
                     
-                    <div class="modal-content">
-                        <div class="modal-section">
-                            <h3><i class="fas fa-check-circle"></i> What You Get</h3>
-                            <div class="modal-features">
-                                ${product.features.map(feature => `
-                                    <div class="modal-feature">
-                                        <i class="fas fa-check" style="color: var(--success);"></i>
-                                        <span>${feature}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="modal-section">
-                            <h3><i class="fas fa-graduation-cap"></i> Perfect For</h3>
-                            <div class="modal-features">
-                                ${product.whatYouLearn.map(learn => `
-                                    <div class="modal-feature">
-                                        <i class="fas fa-check" style="color: var(--success);"></i>
-                                        <span>${learn}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="modal-section">
-                            <h3><i class="fas fa-code"></i> Tech Stack</h3>
-                            <div class="modal-tech">
-                                ${product.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="youtube-note">
-                            <p>${product.note}</p>
+                    <div class="tech-stack-container">
+                        ${product.tech.map(tech => `<span class="tech-chip">${tech}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="modal-content">
+                    <div class="modal-section">
+                        <h3><i class="fas fa-check-circle"></i> What You Get</h3>
+                        <div class="modal-features-grid">
+                            ${product.features.map(feature => `
+                                <div class="modal-feature-card">
+                                    <i class="fas fa-check"></i>
+                                    <span>${feature}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                     
-                    <div class="modal-action">
-                        <div class="btn-group">
-                            <button class="details-btn" id="close-modal-btn">
-                                <i class="fas fa-times"></i>
-                                Close
-                            </button>
-                            <a href="${product.lemonUrl}" target="_blank" class="lemon-btn">
-                                <i class="fas fa-lemon"></i>
-                                Get via Lemon Squeeze
-                            </a>
-                        </div>
-                        <div class="security-note">
-                            <i class="fas fa-lock"></i>
-                            <span>Payments are processed securely by our payment provider (Stripe). Your card details are handled by Stripe and never stored on this site.</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Standard modal for other products
-                modal.className = 'product-modal';
-                modal.innerHTML = `
-                    <button class="modal-close" id="modal-close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="modal-header">
-                        <h2 class="modal-title">${product.name}</h2>
-                        <p class="modal-subtitle">${product.detailedDescription}</p>
-                        <div class="modal-tech">
-                            ${product.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                            <span class="tech-tag" style="background: rgba(236, 72, 153, 0.2); color: var(--accent);">
-                                <i class="fas fa-signal"></i> ${product.difficulty}
-                            </span>
+                    <div class="modal-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Perfect For</h3>
+                        <div class="modal-features-grid">
+                            ${product.whatYouLearn.map(learn => `
+                                <div class="modal-feature-card">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>${learn}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                     
-                    <div class="modal-content">
-                        <div class="modal-section">
-                            <h3><i class="fas fa-star"></i> What You Get</h3>
-                            <div class="modal-features">
-                                ${product.features.map(feature => `
-                                    <div class="modal-feature">
-                                        <i class="fas fa-check"></i>
-                                        <span>${feature}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="modal-section">
-                            <h3><i class="fas fa-graduation-cap"></i> Perfect For</h3>
-                            <div class="modal-features">
-                                ${product.whatYouLearn.map(learn => `
-                                    <div class="modal-feature">
-                                        <i class="fas fa-lightbulb"></i>
-                                        <span>${learn}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="modal-section">
-                            <h3><i class="fas fa-code"></i> Tech Stack</h3>
-                            <div class="modal-tech">
-                                ${product.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                            </div>
-                        </div>
-                        
-                        ${product.note ? `
-                        <div class="youtube-note">
-                            <p>${product.note}</p>
-                        </div>
-                        ` : ''}
+                    ${product.note ? `
+                    <div class="youtube-note">
+                        <p>${product.note}</p>
                     </div>
-                    
-                    <div class="modal-action">
-                        <div class="btn-group">
-                            <button class="details-btn" id="close-modal-btn">
-                                <i class="fas fa-times"></i>
-                                Close
-                            </button>
-                            <a href="${product.lemonUrl}" target="_blank" class="lemon-btn">
-                                <i class="fas fa-lemon"></i>
-                                Get via Lemon Squeeze
-                            </a>
-                        </div>
-                        <div class="security-note">
-                            <i class="fas fa-lock"></i>
-                            <span>Payments are processed securely by our payment provider (Stripe). Your card details are handled by Stripe and never stored on this site.</span>
-                        </div>
+                    ` : ''}
+                </div>
+                
+                <div class="modal-action">
+                    <div class="btn-group">
+                        <button class="details-btn" id="close-modal-btn">
+                            <i class="fas fa-times"></i>
+                            Close
+                        </button>
+                        <a href="${product.lemonUrl}" target="_blank" class="lemon-btn">
+                            <i class="fas fa-lemon"></i>
+                            Get via Lemon Squeeze
+                        </a>
                     </div>
-                `;
-            }
+                    <div class="security-note">
+                        <i class="fas fa-lock"></i>
+                        <span>Payments are processed securely by our payment provider (Lemon Squeeze). Your card details are handled by Lemon Squeeze and never stored on this site.</span>
+                    </div>
+                </div>
+            `;
             
             // Clear modal overlay and add new modal
             modalOverlay.innerHTML = '';
