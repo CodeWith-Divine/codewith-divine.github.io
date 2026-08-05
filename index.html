@@ -1,1 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BUILD ANY RESPONSIVE LAYOUT with CSS Grid & Flexbox (2026 Edition)</title>
+    <!-- FAVICON ADDED HERE -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <!-- Google Fonts: Space Mono & Anton SC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton+SC&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap Icons CDN for Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+  <style>
+    /* ==========================================
+       GLOBAL CSS RESET & VARIABLES
+    ========================================== */
+    :root {
+      --font-primary: 'Space Mono', monospace;
+      --font-watermark: 'Anton SC', sans-serif;
+      --bg-black: #000000;
+      --text-white: #ffffff;
+      --accent-orange: #f97316;
+      --accent-orange-hover: #ea580c;
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-primary);
+    }
+
+    html, body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      overflow-x: hidden;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background-color: var(--accent-orange);
+      color: #000;
+    }
+
+    /* Utility Classes */
+    .glow-orange {
+      filter: drop-shadow(0 0 25px rgba(249, 115, 22, 0.4));
+    }
+
+    .glow-box {
+      box-shadow: 0 0 45px -10px rgba(249, 115, 22, 0.25);
+    }
+
+    .font-sans-fallback {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ==========================================
+       SCROLL REVEAL ANIMATIONS (VANILLA CSS)
+    ========================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(45px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    /* Triggered Active Class */
+    .reveal.is-visible,
+    .reveal-left.is-visible,
+    .reveal-right.is-visible,
+    .reveal-scale.is-visible {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+
+    /* Stagger Delays for Grid Cards */
+    .stagger-parent > * {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .stagger-parent.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+    .stagger-parent.is-visible > *:nth-child(2) { transition-delay: 0.15s; }
+    .stagger-parent.is-visible > *:nth-child(3) { transition-delay: 0.25s; }
+    .stagger-parent.is-visible > *:nth-child(4) { transition-delay: 0.35s; }
+    .stagger-parent.is-visible > *:nth-child(5) { transition-delay: 0.45s; }
+    .stagger-parent.is-visible > *:nth-child(6) { transition-delay: 0.55s; }
+
+    .stagger-parent.is-visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Shared Card Styles */
+    .info-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2rem;
+      border-radius: 16px;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .info-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px) !important;
+    }
+
+    .info-card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .info-card-text {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.6;
+    }
+
+    /* Grids */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .grid-2col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .grid-3col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .grid-3col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ==========================================
+       RESPONSIVE HEADER & NAVIGATION STYLES
+    ========================================== */
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      z-index: 100;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: auto;
+    }
+
+    .logo-pill {
+      height: 48px;
+      padding: 0 1.25rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .logo-pill:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: scale(1.02);
+    }
+
+    .logo-badge {
+      background: var(--accent-orange);
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .menu-capsule {
+      height: 48px;
+      width: 48px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .menu-capsule.open {
+      width: auto;
+      max-width: 90vw;
+    }
+
+    .hamburger-btn {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hamburger-line {
+      width: 18px;
+      height: 1.5px;
+      background-color: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-capsule.open .line-1 { transform: translateY(5.5px) rotate(45deg); }
+    .menu-capsule.open .line-2 { opacity: 0; transform: scale(0); }
+    .menu-capsule.open .line-3 { transform: translateY(-5.5px) rotate(-45deg); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 0 1.25rem 0 0.5rem;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(15px);
+      transition: all 0.3s ease 0.1s;
+    }
+
+    .menu-capsule.open .nav-links {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .download-pill {
+      pointer-events: auto;
+      height: 48px;
+      padding: 0 1.5rem;
+      background: #ffffff;
+      color: #000000;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+    }
+
+    .download-pill:hover {
+      background: var(--accent-orange);
+      color: #ffffff;
+      transform: scale(1.03);
+    }
+
+    .logo-svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Mobile Hamburger Pill Control */
+    .mobile-hamburger-pill {
+      display: none;
+      pointer-events: auto;
+      height: 44px;
+      width: 44px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .m-line {
+      width: 18px;
+      height: 1.5px;
+      background-color: #ffffff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-hamburger-pill.open .m-line-1 { transform: translateY(5.5px) rotate(45deg); }
+    .mobile-hamburger-pill.open .m-line-2 { opacity: 0; transform: scale(0); }
+    .mobile-hamburger-pill.open .m-line-3 { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* Mobile Navigation Drawer */
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: rgba(8, 8, 10, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6.5rem 1.75rem 2.5rem 1.75rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-20px);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mobile-drawer.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .mobile-link {
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .mobile-link:hover, .mobile-link:active {
+      color: var(--accent-orange);
+    }
+
+    .mobile-cta-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--accent-orange);
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border-radius: 14px;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
+    }
+
+    @media (max-width: 767px) {
+      #navbar {
+        height: 70px;
+        padding: 0 1rem;
+      }
+      .logo-pill {
+        height: 44px;
+        padding: 0 0.85rem;
+        gap: 0.5rem;
+      }
+      .logo-badge { display: none; }
+      .desktop-only-capsule, .desktop-cta { display: none !important; }
+      .mobile-hamburger-pill { display: flex; }
+    }
+
+    @media (min-width: 768px) {
+      .mobile-drawer { display: none !important; }
+    }
+
+    /* ==========================================
+       SECTION 1: HERO
+    ========================================== */
+    .section-hero {
+      position: relative;
+      min-height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-video { opacity: 0.38; }
+
+    .dot-grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(#ffffff 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .watermark-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -40%);
+      font-family: var(--font-watermark);
+      font-size: clamp(90px, 24vw, 480px);
+      text-transform: uppercase;
+      letter-spacing: -4px;
+      opacity: 0.08;
+      background: linear-gradient(180deg, var(--accent-orange) 0%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      padding: 0 2rem 4rem 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .hero-content {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--accent-orange);
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      padding: 0.25rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 7.5vw, 90px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .hero-title .highlight {
+      color: var(--accent-orange);
+      font-weight: 700;
+    }
+
+    .hero-description {
+      max-width: 520px;
+      font-size: clamp(0.85rem, 1.5vw, 1rem);
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-top: 1rem;
+    }
+
+    .hero-card {
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card-header-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--accent-orange);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .card-btn:hover {
+      background: var(--accent-orange-hover);
+      color: #fff;
+    }
+
+    /* ==========================================
+       SECTION 2: CINEMATIC PROBLEM
+    ========================================== */
+    .section-cinematic {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      perspective: 1000px;
+      padding: 4rem 1.5rem;
+    }
+
+    .gradient-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(180deg, #000 0%, transparent 100%);
+      z-index: 5;
+    }
+
+    .gradient-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(0deg, #000 0%, transparent 100%);
+      z-index: 5;
+    }
+
+    .cinematic-3d-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1050px;
+      padding: 0 2rem;
+      text-align: center;
+      transform: rotateX(12deg) translateY(0px);
+      transition: transform 0.1s ease-out, opacity 0.5s ease;
+      opacity: 0.95;
+    }
+
+    .cinematic-tag {
+      color: var(--accent-orange);
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .cinematic-text {
+      font-size: clamp(20px, 3.5vw, 40px);
+      color: #ffffff;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+    }
+
+    .code-tag {
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--accent-orange);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85em;
+    }
+
+    /* ==========================================
+       SECTION: WHY THIS GUIDE? (2-COLUMN LAYOUT)
+    ========================================== */
+    .section-why-guide {
+      position: relative;
+      padding: 7rem 1.5rem;
+      background: radial-gradient(circle at 50% 20%, rgba(249, 115, 22, 0.08) 0%, rgba(0, 0, 0, 0.98) 70%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .why-2col-layout {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    @media (min-width: 992px) {
+      .why-2col-layout {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .why-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .why-title {
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .why-subtitle {
+      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .why-card-item {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .why-card-item:hover {
+      transform: translateY(-4px) !important;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .why-card-item.highlight-card {
+      background: linear-gradient(145deg, rgba(249, 115, 22, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.2);
+    }
+
+    .why-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    .problem-badge {
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .solution-badge {
+      background: rgba(249, 115, 22, 0.18);
+      color: var(--accent-orange);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+    }
+
+    .why-card-heading {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .why-card-text {
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.68);
+      line-height: 1.65;
+    }
+
+    .why-image-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .why-ebook-img {
+      width: 100%;
+      height: auto;
+      border-radius: 24px;
+      border: 1px solid rgba(249, 115, 22, 0.38);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 45px rgba(249, 115, 22, 0.22);
+      display: block;
+      object-fit: cover;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .why-ebook-img:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.95), 0 0 60px rgba(249, 115, 22, 0.35);
+    }
+
+    .why-image-badge {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 10, 12, 0.92);
+      border: 1px solid rgba(249, 115, 22, 0.45);
+      backdrop-filter: blur(14px);
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    }
+
+    /* ==========================================
+       SECTION 3: METRICS / INSIDE
+    ========================================== */
+    .section-metrics {
+      position: relative;
+      padding: 8rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .metrics-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1140px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-subtitle {
+      color: var(--accent-orange);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2.5rem 2rem;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: border-color 0.3s;
+    }
+
+    .metric-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+    }
+
+    .metric-number {
+      font-size: clamp(48px, 6vw, 80px);
+      color: var(--accent-orange);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .metric-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================
+       SECTION 4: MASTER MODERN CSS ARCHITECTURE
+    ========================================== */
+    .section-features {
+      position: relative;
+      min-height: 100vh;
+      padding: 6rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .features-header {
+      position: relative;
+      z-index: 10;
+      max-width: 1280px;
+      margin: 0 auto 4rem auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .features-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+
+    .features-title {
+      font-size: clamp(32px, 5.5vw, 68px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .features-grid {
+      position: relative;
+      z-index: 10;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .feature-card {
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .feature-card-title {
+      color: var(--accent-orange);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card-desc {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       SECTION: WHAT YOU'LL LEARN
+    ========================================== */
+    .section-learn {
+      position: relative;
+      padding: 7rem 1.5rem;
+      background: #020202;
+    }
+
+    /* ==========================================
+       SECTION: WHY YOU'LL LOVE IT
+    ========================================== */
+    .section-love-it {
+      position: relative;
+      padding: 7rem 1.5rem;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    /* ==========================================
+       SECTION: WHO THIS GUIDE IS FOR
+    ========================================== */
+    .section-who {
+      position: relative;
+      padding: 7rem 1.5rem;
+      background: #040404;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .who-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .who-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .who-item:hover {
+      border-color: rgba(249, 115, 22, 0.5);
+      background: rgba(249, 115, 22, 0.04);
+      transform: translateX(5px) !important;
+    }
+
+    .who-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    /* ==========================================
+       SECTION 5: INCLUDED INSIDE THE GUIDE
+    ========================================== */
+    .section-bonuses {
+      position: relative;
+      padding: 8rem 1.5rem;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bonuses-container {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .bonus-list {
+      margin-top: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .bonus-row {
+      width: 100%;
+      min-height: 90px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 1.75rem;
+      transition: all 0.3s ease;
+      gap: 0.75rem;
+      text-align: left;
+    }
+
+    @media (min-width: 768px) {
+      .bonus-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+      }
+    }
+
+    .bonus-row:hover {
+      border-color: rgba(249, 115, 22, 0.5);
+      background: rgba(249, 115, 22, 0.05);
+    }
+
+    .bonus-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .bonus-badge {
+      color: var(--accent-orange);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .bonus-name {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .bonus-detail {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+      .bonus-detail {
+        text-align: right;
+        max-width: 480px;
+      }
+    }
+
+    /* ==========================================
+       SECTION: MEET YOUR INSTRUCTOR
+    ========================================== */
+    .section-instructor {
+      position: relative;
+      padding: 8rem 1.5rem;
+      background: #020202;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .instructor-card {
+      max-width: 1140px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 28px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    @media (min-width: 992px) {
+      .instructor-card {
+        flex-direction: row;
+        align-items: center;
+        padding: 4rem;
+      }
+    }
+
+    .instructor-img-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    .instructor-img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      border-radius: 20px;
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 35px rgba(249, 115, 22, 0.2);
+    }
+
+    .instructor-badge-overlay {
+      position: absolute;
+      bottom: -15px;
+      right: -10px;
+      background: rgba(0, 0, 0, 0.88);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      backdrop-filter: blur(12px);
+      padding: 0.65rem 1.25rem;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .instructor-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .instructor-bio {
+      font-size: 0.98rem;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.8;
+    }
+
+    .instructor-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .instructor-highlight-pill {
+      background: rgba(249, 115, 22, 0.12);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    /* ==========================================
+       SECTION: TESTIMONIALS / WHAT DEVELOPERS SAY
+    ========================================== */
+    .section-testimonials {
+      position: relative;
+      padding: 8rem 1.5rem;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(249, 115, 22, 0.5);
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-4px) !important;
+      box-shadow: 0 15px 35px -10px rgba(249, 115, 22, 0.15);
+    }
+
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .testimonial-user {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .testimonial-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .testimonial-handle {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .testimonial-platform {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.15rem;
+    }
+
+    .testimonial-stars {
+      color: #f59e0b;
+      font-size: 0.75rem;
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .testimonial-text {
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.7;
+    }
+
+    .testimonial-img-wrapper {
+      margin-top: 0.5rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #000;
+    }
+
+    .testimonial-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* ==========================================
+       SECTION: FAQ (ACCORDION STYLES)
+    ========================================== */
+    .section-faq {
+      position: relative;
+      padding: 8rem 1.5rem;
+      background: #020202;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .faq-container {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .faq-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .faq-question {
+      padding: 1.5rem 1.75rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      user-select: none;
+    }
+
+    .faq-question-text {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .faq-icon {
+      color: var(--accent-orange);
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
+      padding: 0 1.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .faq-card.active {
+      border-color: rgba(249, 115, 22, 0.5);
+      background: rgba(249, 115, 22, 0.03);
+    }
+
+    .faq-card.active .faq-answer {
+      max-height: 350px;
+      padding: 0 1.75rem 1.5rem 1.75rem;
+    }
+
+    .faq-card.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
+    /* ==========================================
+       SECTION 6: PRICING & CHECKOUT
+    ========================================== */
+    .section-pricing {
+      position: relative;
+      padding: 8rem 1.5rem;
+      background: linear-gradient(180deg, #000 0%, #09090b 50%, #000 100%);
+      overflow: hidden;
+    }
+
+    .pricing-card {
+      max-width: 960px;
+      margin: 0 auto;
+      background: rgba(18, 18, 20, 0.95);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      border-radius: 28px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .pricing-card {
+        flex-direction: row;
+        padding: 3.5rem;
+      }
+    }
+
+    .pricing-left, .pricing-right {
+      flex: 1;
+    }
+
+    .book-mockup-wrapper {
+      position: relative;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .price-tag {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .price-current {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .price-original {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: line-through;
+    }
+
+    .discount-badge {
+      font-size: 0.7rem;
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--accent-orange);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 1.25rem;
+      background: var(--accent-orange);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+
+    .checkout-btn:hover {
+      background: var(--accent-orange-hover);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================
+       FOOTER
+    ========================================== */
+    footer {
+      background: #000;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      footer {
+        flex-direction: row;
+        min-height: 380px;
+      }
+    }
+
+    .footer-left {
+      position: relative;
+      width: 100%;
+      height: 250px;
+    }
+
+    @media (min-width: 768px) {
+      .footer-left {
+        width: 50%;
+        height: auto;
+      }
+    }
+
+    .footer-right {
+      width: 100%;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    @media (min-width: 768px) {
+      .footer-right {
+        width: 50%;
+        padding: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       FIXED NAVBAR
+  ========================================== -->
+  <nav id="navbar">
+    <div class="nav-left">
+      <!-- Logo Pill -->
+      <div class="logo-pill" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg class="logo-svg" viewBox="-50 -50 100 100">
+          <g>
+            <path transform="rotate(0)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+            <path transform="rotate(90)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+            <path transform="rotate(180)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+            <path transform="rotate(270)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+          </g>
+        </svg>
+        <span style="font-size: 0.85rem; font-weight: 700;">GRID & FLEXBOX</span>
+        <span class="logo-badge">2026</span>
+      </div>
+
+      <!-- Desktop Expanding Menu Capsule -->
+      <div class="menu-capsule desktop-only-capsule" id="menuCapsule">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation">
+          <span class="hamburger-line line-1"></span>
+          <span class="hamburger-line line-2"></span>
+          <span class="hamburger-line line-3"></span>
+        </button>
+        <div class="nav-links">
+          <a href="#why-guide" class="scramble-hover" data-text="Why This Guide">Why This Guide</a>
+          <a href="#inside" class="scramble-hover" data-text="Inside">Inside</a>
+          <a href="#features" class="scramble-hover" data-text="Architecture">Architecture</a>
+          <a href="#instructor" class="scramble-hover" data-text="Instructor">Instructor</a>
+          <a href="#testimonials" class="scramble-hover" data-text="Reviews">Reviews</a>
+          <a href="#faq" class="scramble-hover" data-text="FAQ">FAQ</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Desktop CTA & Mobile Hamburger -->
+    <div style="pointer-events: auto; display: flex; align-items: center; gap: 0.5rem;">
+      <a href="https://codewithdivine.lemonsqueezy.com/checkout/buy/b19d1a87-3514-45ad-9fa2-b61a7e1e6d30" target="_blank" rel="noopener" class="download-pill scramble-hover desktop-cta" data-text="GET THE GUIDE">
+        <i class="bi bi-download"></i>
+        <span>GET THE GUIDE</span>
+      </a>
+
+      <button class="mobile-hamburger-pill" id="mobileMenuToggle" aria-label="Toggle Mobile Menu">
+        <span class="m-line m-line-1"></span>
+        <span class="m-line m-line-2"></span>
+        <span class="m-line m-line-3"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE NAVIGATION DRAWER OVERLAY -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-nav-links">
+      <a href="#why-guide" class="mobile-link"><span>Why This Guide</span> <i class="bi bi-chevron-right"></i></a>
+      <a href="#inside" class="mobile-link"><span>Inside The Guide</span> <i class="bi bi-chevron-right"></i></a>
+      <a href="#features" class="mobile-link"><span>Architecture</span> <i class="bi bi-chevron-right"></i></a>
+      <a href="#instructor" class="mobile-link"><span>About Instructor</span> <i class="bi bi-chevron-right"></i></a>
+      <a href="#testimonials" class="mobile-link"><span>Reviews</span> <i class="bi bi-chevron-right"></i></a>
+      <a href="#faq" class="mobile-link"><span>FAQ</span> <i class="bi bi-chevron-right"></i></a>
+    </div>
+
+    <div>
+      <a href="https://codewithdivine.lemonsqueezy.com/checkout/buy/b19d1a87-3514-45ad-9fa2-b61a7e1e6d30" target="_blank" rel="noopener" class="mobile-cta-btn">
+        <i class="bi bi-download"></i>
+        <span>GET THE GUIDE ($30)</span>
+      </a>
+      <div style="text-align: center; font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 0.85rem;" class="font-sans-fallback">
+        Instant Download • Lifetime Updates
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SECTION 1: HERO (Mouse Scrubbed Video)
+  ========================================== -->
+  <section class="section-hero" id="heroSection">
+    <video id="heroVideo" class="bg-video hero-video" muted playsinline preload="auto">
+      <source src="assets/videos/video-main.mp4" type="video/mp4">
+    </video>
+
+    <div class="dot-grid-overlay"></div>
+    <div class="watermark-text">LAYOUT ENGINE</div>
+
+    <div style="flex: 1;"></div>
+
+    <div class="hero-content">
+      <div style="flex: 1;">
+        <div class="hero-badge">
+          <i class="bi bi-stars"></i>
+          <span>2026 PRACTICAL EDITION BY @CODEWITHDIVINE</span>
+        </div>
+
+        <!-- Hacker Scramble Reveal Headline -->
+        <h1 class="hero-title">
+          <span class="scramble-in" data-text="BUILD ANY" data-delay="100">BUILD ANY</span><br>
+          <span class="highlight scramble-in" data-text="RESPONSIVE LAYOUT" data-delay="400">RESPONSIVE LAYOUT</span>
+        </h1>
+
+        <!-- Hacker Scramble Reveal Subheadline -->
+        <p class="hero-description font-sans-fallback scramble-in" data-delay="750" data-text="Stop trial and error. Stop fighting alignment. A complete practical guide for frontend developers who want to master CSS Grid & Flexbox, build clean responsive components, and code with absolute confidence.">
+          Stop trial and error. Stop fighting alignment. A complete practical guide for frontend developers who want to master CSS Grid & Flexbox, build clean responsive components, and code with absolute confidence.
+        </p>
+      </div>
+
+      <!-- Quick Specs Glass Card -->
+      <div class="hero-card reveal-scale">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div class="card-header-icon">
+            <i class="bi bi-layout-split" style="font-size: 1.2rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em;">Guide Specs</div>
+            <div style="font-size: 0.9rem; font-weight: 700;">150+ Pages & 100+ Examples</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.4rem;" class="font-sans-fallback">
+          <div><i class="bi bi-check-circle-fill" style="color: var(--accent-orange);"></i> HTML5 / CSS3 / JS Ready</div>
+          <div><i class="bi bi-check-circle-fill" style="color: var(--accent-orange);"></i> Real-World Layout Projects</div>
+          <div><i class="bi bi-check-circle-fill" style="color: var(--accent-orange);"></i> Instant Access + Lifetime Updates</div>
+        </div>
+
+        <!-- Lemon Squeezy Link -->
+        <a href="https://codewithdivine.lemonsqueezy.com/checkout/buy/b19d1a87-3514-45ad-9fa2-b61a7e1e6d30" target="_blank" rel="noopener" class="card-btn scramble-hover" data-text="GET INSTANT ACCESS">
+          <span>GET INSTANT ACCESS</span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION 2: CINEMATIC PROBLEM (3D Perspective Scroll Tilt)
+  ========================================== -->
+  <section class="section-cinematic" id="problem">
+    <video class="bg-video" autoplay muted loop playsinline style="opacity: 0.35;">
+      <source src="assets/videos/video2.mp4" type="video/mp4">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_092455_089c54f8-3b03-4966-9df1-e9746063d0ef.mp4" type="video/mp4">
+    </video>
+
+    <div class="gradient-top"></div>
+    <div class="gradient-bottom"></div>
+
+    <div class="cinematic-3d-wrapper" id="cinematicWrapper">
+      <span class="cinematic-tag">// THE PROBLEM WITH CSS LAYOUTS</span>
+      <p class="cinematic-text font-sans-fallback">
+        CSS layout should not feel like trial and error. Stacking <code class="code-tag">display: flex</code> or guessing <code class="code-tag">grid-template-columns</code> causes broken mobile views and endless alignment bugs. This guide replaces guesswork with structured architectural mental models.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: WHY THIS GUIDE? (2-COLUMN SHOWCASE)
+  ========================================== -->
+  <section class="section-why-guide" id="why-guide">
+    <div class="why-2col-layout">
+      <!-- Left Column: Copy & Problem/Solution Cards -->
+      <div class="why-header-left reveal-left">
+        <div class="hero-badge" style="margin-bottom: 0.25rem;">
+          <i class="bi bi-patch-question-fill"></i>
+          <span>// THE REASON</span>
+        </div>
+
+        <h2 class="why-title">
+          WHY THIS <span style="color: var(--accent-orange);">GUIDE?</span>
+        </h2>
+
+        <p class="why-subtitle font-sans-fallback">
+          Learning CSS layout shouldn't feel confusing.
+        </p>
+
+        <div class="why-grid stagger-parent">
+          <!-- Card 1: The Problem -->
+          <div class="why-card-item">
+            <div class="why-card-badge problem-badge">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <span>THE FRICTION</span>
+            </div>
+            <h3 class="why-card-heading">Endless Alignment Trial & Error</h3>
+            <p class="why-card-text font-sans-fallback">
+              Most developers waste hours trying to fix alignment issues, responsive bugs, and layouts that break unexpectedly on different screen sizes.
+            </p>
+          </div>
+
+          <!-- Card 2: The Solution (Highlighted) -->
+          <div class="why-card-item highlight-card">
+            <div class="why-card-badge solution-badge">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>THE SOLUTION</span>
+            </div>
+            <h3 class="why-card-heading">Structured Practical Blueprint</h3>
+            <p class="why-card-text font-sans-fallback">
+              This guide simplifies everything into practical lessons and real examples so you can build layouts faster and with absolute confidence.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Bold eBook Cover Image Showcase -->
+      <div class="why-image-wrapper reveal-right">
+        <img src="divine.jpg" alt="Build Any Responsive Layout eBook Showcase" class="why-ebook-img" onerror="this.src='assets/images/Responsive-Layouts-with-css-grid-and-flexbox-guide.png'">
+        <div class="why-image-badge">
+          <i class="bi bi-book-half" style="color: var(--accent-orange); font-size: 1.05rem;"></i>
+          <span>150+ PAGES • 100+ EXAMPLES</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION 3: METRICS / INSIDE
+  ========================================== -->
+  <section class="section-metrics" id="inside">
+    <div class="metrics-container">
+      <div class="reveal">
+        <span class="section-subtitle">WHAT'S INSIDE THE GUIDE</span>
+        <h2 class="section-title">Built for Practical Execution</h2>
+      </div>
+
+      <!-- Metrics Row -->
+      <div class="metrics-grid stagger-parent">
+        <div class="metric-card">
+          <span class="metric-number">150+</span>
+          <span class="metric-label">PAGES OF COMPREHENSIVE CSS LOGIC</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-number">100+</span>
+          <span class="metric-label">PRACTICAL TESTED LAYOUT EXAMPLES</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-number">0%</span>
+          <span class="metric-label">TRIAL & ERROR ALIGNMENT GUESSWORK</span>
+        </div>
+      </div>
+
+      <!-- Additional Detailed Cards -->
+      <div class="grid-3col stagger-parent">
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-list-ol"></i>
+          </div>
+          <h3 class="info-card-title">Step-by-Step Explanations</h3>
+          <p class="info-card-text font-sans-fallback">
+            Step-by-step explanations of CSS Grid & Flexbox mechanics, taking you from foundational alignment to advanced responsive layouts.
+          </p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-phone"></i>
+          </div>
+          <h3 class="info-card-title">Modern Responsive Layouts</h3>
+          <p class="info-card-text font-sans-fallback">
+            Modern responsive layout techniques that automatically stretch, wrap, and adapt seamlessly across all viewports.
+          </p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-code-square"></i>
+          </div>
+          <h3 class="info-card-title">Practical Code Snippets</h3>
+          <p class="info-card-text font-sans-fallback">
+            Practical code snippets you can reuse directly in your web applications and client projects to save engineering time.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION 4: MASTER MODERN CSS ARCHITECTURE
+  ========================================== -->
+  <section class="section-features" id="features">
+    <video class="bg-video" autoplay muted loop playsinline style="opacity: 0.3;">
+      <source src="assets/videos/video4.mp4" type="video/mp4">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_095750_32a52ce0-2005-45c9-9093-41f03fde9530.mp4" type="video/mp4">
+    </video>
+
+    <div class="features-header reveal">
+      <h2 class="features-title">
+        MASTER MODERN <br>
+        <span style="color: var(--accent-orange);">CSS ARCHITECTURE</span>
+      </h2>
+      <p style="max-width: 320px; color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.6;" class="font-sans-fallback">
+        Master grid tracks, flexible directions, responsive wrapping, auto-fit algorithms, and zero-break layouts across all viewports.
+      </p>
+    </div>
+
+    <div class="features-grid stagger-parent">
+      <div class="feature-card">
+        <div class="feature-card-title">1. Practical & Easy</div>
+        <p class="feature-card-desc font-sans-fallback">No abstract math. Learn layout rules with real-world website sections like Instagram feeds, dashboard views, and brand identity cards.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-title">2. Modern Approach</div>
+        <p class="feature-card-desc font-sans-fallback">Learn when to use Grid vs Flexbox with a clear decision engine so you never struggle with choosing the right CSS property.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-title">3. Fully Responsive</div>
+        <p class="feature-card-desc font-sans-fallback">Build layouts that automatically adapt seamlessly from tiny mobile viewports to ultra-wide desktop displays without ugly media query bloat.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-title">4. Save Engineering Time</div>
+        <p class="feature-card-desc font-sans-fallback">Build complex dashboards, dynamic landing pages, and responsive components 3x faster with reusable layout patterns.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: WHAT YOU'LL LEARN
+  ========================================== -->
+  <section class="section-learn" id="learn">
+    <div style="max-width: 1280px; margin: 0 auto; position: relative; z-index: 10;">
+      <div class="reveal">
+        <span class="section-subtitle">// OUTCOMES & SKILLS</span>
+        <h2 class="section-title" style="margin-bottom: 1rem;">What You'll Learn</h2>
+        <p style="text-align: center; color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 3.5rem;" class="font-sans-fallback">
+          After finishing this guide, you'll know how to:
+        </p>
+      </div>
+
+      <div class="grid-3col stagger-parent">
+        <!-- Card 1 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-boxes"></i>
+          </div>
+          <h3 class="info-card-title">Build Responsive Layouts</h3>
+          <p class="info-card-text font-sans-fallback">
+            Build responsive layouts completely from scratch with clean, scalable, and maintainable CSS architecture.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-diagram-2"></i>
+          </div>
+          <h3 class="info-card-title">Grid vs Flexbox Mastery</h3>
+          <p class="info-card-text font-sans-fallback">
+            Know exactly when to use Grid vs Flexbox with a clear mental framework for every component layout.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-speedometer2"></i>
+          </div>
+          <h3 class="info-card-title">Create Sections Faster</h3>
+          <p class="info-card-text font-sans-fallback">
+            Create modern website sections 3x faster without spending hours tweaking positioning and alignment.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-shield-x"></i>
+          </div>
+          <h3 class="info-card-title">Avoid Common Mistakes</h3>
+          <p class="info-card-text font-sans-fallback">
+            Avoid common CSS layout mistakes like unwanted scrollbars, element overflow, and broken flex wrapping.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-display"></i>
+          </div>
+          <h3 class="info-card-title">All Screen Sizes Ready</h3>
+          <p class="info-card-text font-sans-fallback">
+            Build layouts that work perfectly across all screen sizes—from small mobile phones to ultra-wide desktop monitors.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <i class="bi bi-sliders"></i>
+          </div>
+          <h3 class="info-card-title">Modern Fluid Mechanics</h3>
+          <p class="info-card-text font-sans-fallback">
+            Master modern CSS functions like clamp(), auto-fit, auto-fill, and fluid sizing without media query bloat.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: WHY YOU'LL LOVE IT
+  ========================================== -->
+  <section class="section-love-it" id="love-it">
+    <video class="bg-video" autoplay muted loop playsinline style="opacity: 0.25;">
+      <source src="assets/videos/video3.mp4" type="video/mp4">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_095810_ecea3dd2-fc5e-4e41-8696-4219290b6589.mp4" type="video/mp4">
+    </video>
+    
+    <div style="max-width: 1280px; margin: 0 auto; position: relative; z-index: 10;">
+      <div class="reveal">
+        <span class="section-subtitle">// THE ADVANTAGE</span>
+        <h2 class="section-title" style="margin-bottom: 3.5rem;">Why You'll Love It</h2>
+      </div>
+
+      <div class="grid-3col stagger-parent">
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-lightning-charge"></i></div>
+          <h3 class="info-card-title">Practical, Not Just Theory</h3>
+          <p class="info-card-text font-sans-fallback">Focus purely on functional, real-world layout techniques used in modern web development today.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-chat-left-text"></i></div>
+          <h3 class="info-card-title">Beginner-Friendly Explanations</h3>
+          <p class="info-card-text font-sans-fallback">Complex CSS layout concepts broken down into simple, intuitive language that anyone can understand.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-folder-check"></i></div>
+          <h3 class="info-card-title">Real Project Examples</h3>
+          <p class="info-card-text font-sans-fallback">Learn by building actual production layouts like Instagram grids, SaaS dashboards, and landing pages.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-eye"></i></div>
+          <h3 class="info-card-title">Clean Visual Illustrations</h3>
+          <p class="info-card-text font-sans-fallback">Clear visual diagrams that demonstrate grid tracks, flex axes, and alignment properties at a glance.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-clock-history"></i></div>
+          <h3 class="info-card-title">Saves Hours of Trial & Error</h3>
+          <p class="info-card-text font-sans-fallback">Stop guessing random CSS properties and spend your time building features instead of fighting layout bugs.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-icon"><i class="bi bi-bookmark-star"></i></div>
+          <h3 class="info-card-title">A Lifelong Desktop Reference</h3>
+          <p class="info-card-text font-sans-fallback">A handy reference guide you'll come back to whenever you're building websites and modern interfaces.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: WHO THIS GUIDE IS FOR
+  ========================================== -->
+  <section class="section-who" id="who-for">
+    <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+      <div class="reveal">
+        <span class="section-subtitle">// AUDIENCE</span>
+        <h2 class="section-title" style="margin-bottom: 3.5rem;">Who This Guide Is For</h2>
+      </div>
+
+      <div class="who-list stagger-parent">
+        <div class="who-item">
+          <div class="who-icon"><i class="bi bi-check-lg"></i></div>
+          <span style="font-size: 1rem; color: #fff; font-weight: 700;" class="font-sans-fallback">Frontend beginners</span>
+        </div>
+
+        <div class="who-item">
+          <div class="who-icon"><i class="bi bi-check-lg"></i></div>
+          <span style="font-size: 1rem; color: #fff; font-weight: 700;" class="font-sans-fallback">HTML & CSS learners</span>
+        </div>
+
+        <div class="who-item">
+          <div class="who-icon"><i class="bi bi-check-lg"></i></div>
+          <span style="font-size: 1rem; color: #fff; font-weight: 700;" class="font-sans-fallback">JavaScript developers improving their UI skills</span>
+        </div>
+
+        <div class="who-item">
+          <div class="who-icon"><i class="bi bi-check-lg"></i></div>
+          <span style="font-size: 1rem; color: #fff; font-weight: 700;" class="font-sans-fallback">Self-taught developers</span>
+        </div>
+
+        <div class="who-item">
+          <div class="who-icon"><i class="bi bi-check-lg"></i></div>
+          <span style="font-size: 1rem; color: #fff; font-weight: 700;" class="font-sans-fallback">Anyone who wants to build responsive websites faster</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION 5: INCLUDED INSIDE THE GUIDE
+  ========================================== -->
+  <section class="section-bonuses" id="included">
+    <div class="bonuses-container">
+      <div class="reveal">
+        <span class="section-subtitle">// COMPLETE TOOLKIT</span>
+        <h2 class="section-title" style="margin-bottom: 1rem;">Included Inside the Guide</h2>
+        <p style="color: rgba(255,255,255,0.65); font-size: 0.95rem; max-width: 620px; margin: 0 auto;" class="font-sans-fallback">
+          Accelerate your workflow with printable cheatsheets, decision frameworks, and copy-paste layout patterns crafted for instant production use.
+        </p>
+      </div>
+
+      <div class="bonus-list stagger-parent">
+        <div class="bonus-row">
+          <div class="bonus-left">
+            <span class="bonus-badge">01</span>
+            <span class="bonus-name font-sans-fallback">Responsive Layout Cheat Sheet</span>
+          </div>
+          <div class="bonus-detail font-sans-fallback">
+            A quick-reference guide that helps you remember the most important CSS Grid and Flexbox properties while building projects.
+          </div>
+        </div>
+
+        <div class="bonus-row">
+          <div class="bonus-left">
+            <span class="bonus-badge">02</span>
+            <span class="bonus-name font-sans-fallback">Grid vs Flexbox Decision Guide</span>
+          </div>
+          <div class="bonus-detail font-sans-fallback">
+            Never wonder which layout system to use again. This simple framework helps you choose the right tool for every layout.
+          </div>
+        </div>
+
+        <div class="bonus-row">
+          <div class="bonus-left">
+            <span class="bonus-badge">03</span>
+            <span class="bonus-name font-sans-fallback">Ready-to-Build Layout Patterns</span>
+          </div>
+          <div class="bonus-detail font-sans-fallback">
+            Copy & paste production-ready layout components for hero cards, navigation, grids, and responsive dashboards.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: MEET YOUR INSTRUCTOR
+  ========================================== -->
+  <section class="section-instructor" id="instructor">
+    <div class="instructor-card glow-box">
+      <!-- Instructor Image Column (Slide from Left) -->
+      <div class="instructor-img-wrapper reveal-left">
+        <img src="divine.jpg" alt="Divine - Creator of CodeWithDivine" class="instructor-img" onerror="this.src='assets/images/mr-emmanuel-elikwu.png'">
+        <div class="instructor-badge-overlay">
+          <i class="bi bi-patch-check-fill" style="color: var(--accent-orange); font-size: 1.1rem;"></i>
+          <span>AUTHOR & CREATOR</span>
+        </div>
+      </div>
+
+      <!-- Instructor Bio Column (Slide from Right) -->
+      <div class="instructor-info reveal-right">
+        <span class="section-subtitle" style="text-align: left;">// ABOUT THE AUTHOR</span>
+        <h2 style="font-size: clamp(28px, 3.5vw, 42px); font-weight: 300; line-height: 1.1;">
+          Meet Your <span style="color: var(--accent-orange); font-weight: 700;">Instructor</span>
+        </h2>
+
+        <p class="instructor-bio font-sans-fallback">
+          <strong style="color: #fff;">Hi, I'm Emmanuel Elikwu (Divine), creator of CodeWithDivine.</strong><br>
+          I help developers learn HTML, CSS, and JavaScript through practical, project-based tutorials.
+        </p>
+
+        <p class="instructor-bio font-sans-fallback">
+          After teaching CSS layouts to thousands of developers on YouTube, I noticed many people struggled with the exact same problem—knowing when to use CSS Grid and when to use Flexbox.
+        </p>
+
+        <p class="instructor-bio font-sans-fallback">
+          That's why I created this guide. Instead of spending hours jumping between blog posts and videos, you'll have one practical resource that explains the concepts clearly and helps you build responsive layouts with confidence.
+        </p>
+
+        <!-- Instructor Stat Pills -->
+        <div class="instructor-highlights font-sans-fallback">
+          <div class="instructor-highlight-pill">
+            <i class="bi bi-youtube" style="color: #ff0000; font-size: 1rem;"></i>
+            <span>Creator of CodeWithDivine</span>
+          </div>
+          <div class="instructor-highlight-pill">
+            <i class="bi bi-people-fill" style="color: var(--accent-orange);"></i>
+            <span>1,000+ YouTube Subscribers</span>
+          </div>
+          <div class="instructor-highlight-pill">
+            <i class="bi bi-mortarboard-fill" style="color: var(--accent-orange);"></i>
+            <span>Practical, Beginner-Friendly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: TESTIMONIALS / WHAT DEVELOPERS SAY
+  ========================================== -->
+  <section class="section-testimonials" id="testimonials">
+    <div style="max-width: 1280px; margin: 0 auto; position: relative; z-index: 10;">
+      <div class="reveal">
+        <span class="section-subtitle">// REAL STUDENT FEEDBACK</span>
+        <h2 class="section-title" style="margin-bottom: 3.5rem;">
+          What Developers Are Saying <br>
+          <span style="color: var(--accent-orange);">About My Teaching</span>
+        </h2>
+      </div>
+
+      <div class="grid-3col stagger-parent">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card">
+          <div>
+            <div class="testimonial-header" style="margin-bottom: 1rem;">
+              <div class="testimonial-user">
+                <div class="testimonial-avatar" style="background: rgba(249, 115, 22, 0.2); color: var(--accent-orange);">R</div>
+                <div>
+                  <div class="testimonial-handle">@ridamalik6789</div>
+                  <div class="testimonial-platform"><i class="bi bi-youtube" style="color: #ff0000;"></i> YouTube Community</div>
+                </div>
+              </div>
+              <div class="testimonial-stars">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+
+            <p class="testimonial-text font-sans-fallback">
+              "Thanks Man, this was such an interesting and creative project. I really enjoyed watching the app come to life. AND I did learn a lot of flexbox, grid nuances much better. All the best!"
+            </p>
+          </div>
+
+          <div class="testimonial-img-wrapper">
+            <img src="review1.png" alt="YouTube review screenshot from @ridamalik6789" class="testimonial-img" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card">
+          <div>
+            <div class="testimonial-header" style="margin-bottom: 1rem;">
+              <div class="testimonial-user">
+                <div class="testimonial-avatar" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">A</div>
+                <div>
+                  <div class="testimonial-handle">@ArowosogeTitilayo</div>
+                  <div class="testimonial-platform"><i class="bi bi-youtube" style="color: #ff0000;"></i> YouTube Community</div>
+                </div>
+              </div>
+              <div class="testimonial-stars">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+
+            <p class="testimonial-text font-sans-fallback">
+              "Pls do more of this kind of tutorial, project based tutorials. This really helped learning grid and flexbox in real word projects, which will boost my portfolio. Thanks"
+            </p>
+          </div>
+
+          <div class="testimonial-img-wrapper">
+            <img src="review2.png" alt="YouTube review screenshot from @ArowosogeTitilayo" class="testimonial-img" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card">
+          <div>
+            <div class="testimonial-header" style="margin-bottom: 1rem;">
+              <div class="testimonial-user">
+                <div class="testimonial-avatar" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">C</div>
+                <div>
+                  <div class="testimonial-handle">@CR-xr7im</div>
+                  <div class="testimonial-platform"><i class="bi bi-youtube" style="color: #ff0000;"></i> YouTube Community</div>
+                </div>
+              </div>
+              <div class="testimonial-stars">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+
+            <p class="testimonial-text font-sans-fallback">
+              "Loved this video! You made learning fun and easy! It shows the amount of work you put into it. Cheat sheet please and thank you!"
+            </p>
+          </div>
+
+          <div class="testimonial-img-wrapper">
+            <img src="review3.png" alt="YouTube review screenshot from @CR-xr7im" class="testimonial-img" onerror="this.parentElement.style.display='none'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: FREQUENTLY ASKED QUESTIONS
+  ========================================== -->
+  <section class="section-faq" id="faq">
+    <div style="max-width: 1140px; margin: 0 auto; position: relative; z-index: 10;">
+      <div class="reveal">
+        <span class="section-subtitle">// GOT QUESTIONS?</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-container stagger-parent">
+        <!-- FAQ Item 1 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-question-circle" style="color: var(--accent-orange);"></i>
+              <span>Is this guide beginner-friendly?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            Yes! This guide is written for beginners and intermediate frontend developers. If you already know basic HTML and CSS, you'll be able to follow along comfortably.
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-box-seam" style="color: var(--accent-orange);"></i>
+              <span>What's included in the guide?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            You'll get a comprehensive guide covering CSS Grid and Flexbox with step-by-step explanations, practical examples, responsive layout techniques, visual illustrations, real-world projects, and additional reference resources to help you build layouts faster.
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-layout-split" style="color: var(--accent-orange);"></i>
+              <span>Will I learn both CSS Grid and Flexbox?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            Absolutely. You'll learn how each layout system works, when to use one over the other, and how to combine them to build modern responsive websites.
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-tools" style="color: var(--accent-orange);"></i>
+              <span>Is this mostly theory or practical?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            This guide is heavily focused on practical learning. You'll work through real examples, reusable code snippets, responsive layouts, and projects that you can apply to your own websites.
+          </div>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-filetype-html" style="color: var(--accent-orange);"></i>
+              <span>Do I need JavaScript to use this guide?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            No. The guide focuses on HTML and CSS layouts. You only need a basic understanding of HTML and CSS to get the most out of it.
+          </div>
+        </div>
+
+        <!-- FAQ Item 6 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-cloud-arrow-down" style="color: var(--accent-orange);"></i>
+              <span>How will I receive the guide?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            Immediately after your purchase, you'll receive instant access to download the ebook and start learning right away.
+          </div>
+        </div>
+
+        <!-- FAQ Item 7 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-arrow-repeat" style="color: var(--accent-orange);"></i>
+              <span>Will I receive future updates?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            Yes! Your purchase includes lifetime updates, so if new content or improvements are added to the guide, you'll receive them at no additional cost.
+          </div>
+        </div>
+
+        <!-- FAQ Item 8 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-briefcase" style="color: var(--accent-orange);"></i>
+              <span>Can I use these layouts in my own projects?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            Yes. The examples and techniques are designed to help you build your own personal, portfolio, freelance, or client projects more efficiently.
+          </div>
+        </div>
+
+        <!-- FAQ Item 9 -->
+        <div class="faq-card">
+          <div class="faq-question">
+            <div class="faq-question-text">
+              <i class="bi bi-chat-dots" style="color: var(--accent-orange);"></i>
+              <span>What if I have questions while learning?</span>
+            </div>
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer font-sans-fallback">
+            If you get stuck or have questions, you can reach out using the support details provided with your purchase. I'll do my best to help you.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION 6: PRICING & CHECKOUT
+  ========================================== -->
+  <section class="section-pricing" id="pricing">
+    <div class="pricing-card glow-box reveal-scale">
+      <!-- Book Visual Card -->
+      <div class="pricing-left">
+        <div class="book-mockup-wrapper">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="logo-badge">2026 EDITION</span>
+            <svg class="logo-svg" viewBox="-50 -50 100 100" style="color: var(--accent-orange);">
+              <g>
+                <path transform="rotate(0)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+                <path transform="rotate(90)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+                <path transform="rotate(180)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+                <path transform="rotate(270)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+              </g>
+            </svg>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; line-height: 1.2;">BUILD ANY RESPONSIVE LAYOUT</h3>
+          <p style="font-size: 0.75rem; color: var(--accent-orange);">with CSS Grid & Flexbox</p>
+          <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.5rem 0;"></div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.5rem;" class="font-sans-fallback">
+            <div><i class="bi bi-file-earmark-pdf" style="color: var(--accent-orange);"></i> 150+ Pages PDF eBook</div>
+            <div><i class="bi bi-code-slash" style="color: var(--accent-orange);"></i> 100+ Live Code Examples</div>
+            <div><i class="bi bi-layers" style="color: var(--accent-orange);"></i> 3 Included Toolkit Guides</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Details -->
+      <div class="pricing-right">
+        <span style="font-size: 0.7rem; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.15em;">Instant Digital Download</span>
+        <h3 style="font-size: 1.75rem; font-weight: 700; margin-top: 0.25rem;">Get The Complete Guide</h3>
+
+        <div class="price-tag">
+          <span class="price-current">$30</span>
+          <span class="price-original">$60</span>
+          <span class="discount-badge">SAVE 50% TODAY</span>
+        </div>
+
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.6;" class="font-sans-fallback">
+          Get full access to the book, downloadable code snippets, lifetime updates, and all 3 included reference cheat sheets instantly.
+        </p>
+
+        <!-- Lemon Squeezy Link -->
+        <a href="https://codewithdivine.lemonsqueezy.com/checkout/buy/b19d1a87-3514-45ad-9fa2-b61a7e1e6d30" target="_blank" rel="noopener" class="checkout-btn glow-orange scramble-hover" data-text="DOWNLOAD THE GUIDE NOW">
+          <i class="bi bi-download"></i>
+          <span>DOWNLOAD THE GUIDE NOW</span>
+        </a>
+
+        <div style="display: flex; justify-content: center; gap: 1rem; font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 1rem;">
+          <span><i class="bi bi-shield-check" style="color: #4ade80;"></i> Secure Checkout</span>
+          <span>•</span>
+          <span>Lifetime Updates</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       FOOTER
+  ========================================== -->
+  <footer>
+    <div class="footer-left">
+      <video class="bg-video" autoplay muted loop playsinline style="opacity: 0.4;">
+        <source src="assets/videos/video5.mp4" type="video/mp4">
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_080203_fd7f4f85-3a86-4837-8192-85e7bfe68e75.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="footer-right">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+          <svg class="logo-svg" viewBox="-50 -50 100 100" style="color: rgba(255,255,255,0.8);">
+            <g>
+              <path transform="rotate(0)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+              <path transform="rotate(90)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+              <path transform="rotate(180)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+              <path transform="rotate(270)" d="M 1.5,23 L 1.5,33 C 1.5,38.5 6,43 11.5,43 L 16.5,43 C 22,43 26.5,38.5 26.5,33 Q 28,28 33,26.5 C 38.5,26.5 43,22 43,16.5 L 43,11.5 C 43,6 38.5,1.5 33,1.5 L 23,1.5 Q 12,12 1.5,23 Z"/>
+            </g>
+          </svg>
+          <span style="font-weight: 700; font-size: 0.9rem;">GRID & FLEXBOX GUIDE</span>
+        </div>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6;" class="font-sans-fallback">
+          Master responsive layouts with confidence. Built by @CODEWITHDIVINE.
+        </p>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2rem;">
+        <span style="font-size: 0.75rem; color: rgba(255,255,255,0.4);" class="font-sans-fallback">© 2026 CodeWithDivine. All rights reserved.</span>
+        <a href="#heroSection" style="color: var(--accent-orange); text-decoration: none; font-size: 0.8rem;">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       VANILLA JS ANIMATION ENGINE, SCRUBBING & SCROLL REVEAL OBSERVER
+  ========================================== -->
+  <script>
+    /**
+     * Pure Vanilla JS Text Scramble Function
+     */
+    function scrambleText(element, targetText, duration = 800) {
+      const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const steps = 25;
+      const intervalTime = Math.max(16, duration / steps);
+      let currentStep = 0;
+
+      if (element._scrambleInterval) {
+        clearInterval(element._scrambleInterval);
+      }
+
+      element._scrambleInterval = setInterval(() => {
+        currentStep++;
+        const progress = currentStep / steps;
+        const decodedLength = Math.floor(progress * targetText.length);
+
+        let result = '';
+        for (let i = 0; i < targetText.length; i++) {
+          const char = targetText[i];
+          if (char === ' ' || char === '\n' || char === '\t') {
+            result += char;
+          } else if (i < decodedLength) {
+            result += char;
+          } else {
+            result += chars[Math.floor(Math.random() * chars.length)];
+          }
+        }
+
+        element.textContent = result;
+
+        if (currentStep >= steps) {
+          clearInterval(element._scrambleInterval);
+          element.textContent = targetText;
+          element._scrambleInterval = null;
+        }
+      }, intervalTime);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ----------------------------------------------------
+      // 1. Native Intersection Observer for Smooth Scroll Reveal (Bi-directional)
+      // ----------------------------------------------------
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -50px 0px',
+        threshold: 0.12
+      };
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          } else {
+            entry.target.classList.remove('is-visible');
+          }
+        });
+      }, observerOptions);
+
+      // Target all reveal elements across all sections
+      const revealTargets = document.querySelectorAll(
+        '.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger-parent'
+      );
+      revealTargets.forEach(el => revealObserver.observe(el));
+
+      // ----------------------------------------------------
+      // 2. Hero Video Mouse-Scrubbing Logic
+      // ----------------------------------------------------
+      const heroSection = document.getElementById('heroSection');
+      const heroVideo = document.getElementById('heroVideo');
+
+      if (heroSection && heroVideo) {
+        heroVideo.pause(); // Start paused for manual scrubbing
+        heroSection.addEventListener('mousemove', (e) => {
+          if (!heroVideo.duration) return;
+          const rect = heroSection.getBoundingClientRect();
+          const mouseX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+          const progress = mouseX / rect.width;
+          heroVideo.currentTime = heroVideo.duration * progress * 0.8;
+        });
+      }
+
+      // ----------------------------------------------------
+      // 3. 3D Perspective Scroll Tilt (Cinematic Problem Section)
+      // ----------------------------------------------------
+      const cinematicWrapper = document.getElementById('cinematicWrapper');
+      const problemSection = document.getElementById('problem');
+
+      window.addEventListener('scroll', () => {
+        if (!cinematicWrapper || !problemSection) return;
+        const rect = problemSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        if (rect.top < windowHeight && rect.bottom > 0) {
+          const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+          const rotateX = 24 - (progress * 20); // Dynamic 3D angle
+          const translateY = (0.5 - progress) * 100;
+          cinematicWrapper.style.transform = `rotateX(${rotateX}deg) translateY(${translateY}px)`;
+          cinematicWrapper.style.opacity = Math.min(Math.max(progress * 2.2, 0.3), 1);
+        }
+      });
+
+      // ----------------------------------------------------
+      // 4. Entrance Text Scramble Animations
+      // ----------------------------------------------------
+      const scrambleInElements = document.querySelectorAll('.scramble-in');
+      scrambleInElements.forEach((el) => {
+        const text = el.getAttribute('data-text') || el.textContent.trim();
+        const delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+        const duration = parseInt(el.getAttribute('data-duration') || '800', 10);
+
+        setTimeout(() => {
+          scrambleText(el, text, duration);
+        }, delay);
+      });
+
+      // ----------------------------------------------------
+      // 5. Hover Text Scramble Effect
+      // ----------------------------------------------------
+      const hoverElements = document.querySelectorAll('.scramble-hover');
+      hoverElements.forEach((el) => {
+        el.addEventListener('mouseenter', () => {
+          const textSpan = el.querySelector('span') || el;
+          const textToScramble = el.getAttribute('data-text') || textSpan.textContent.trim();
+          scrambleText(textSpan, textToScramble, 600);
+        });
+      });
+
+      // ----------------------------------------------------
+      // 6. FAQ Accordion Logic
+      // ----------------------------------------------------
+      const faqCards = document.querySelectorAll('.faq-card');
+      faqCards.forEach(card => {
+        const question = card.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+          const isOpen = card.classList.contains('active');
+          faqCards.forEach(c => c.classList.remove('active'));
+          if (!isOpen) {
+            card.classList.add('active');
+          }
+        });
+      });
+
+      // ----------------------------------------------------
+      // 7. Desktop Hamburger Menu Toggle
+      // ----------------------------------------------------
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const menuCapsule = document.getElementById('menuCapsule');
+
+      if (hamburgerBtn && menuCapsule) {
+        hamburgerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          menuCapsule.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!menuCapsule.contains(e.target)) {
+            menuCapsule.classList.remove('open');
+          }
+        });
+
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            menuCapsule.classList.remove('open');
+          });
+        });
+      }
+
+      // ----------------------------------------------------
+      // 8. Mobile Navigation Drawer Toggle Logic
+      // ----------------------------------------------------
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      if (mobileMenuToggle && mobileDrawer) {
+        mobileMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          mobileMenuToggle.classList.toggle('open');
+          mobileDrawer.classList.toggle('active');
+          document.body.style.overflow = mobileDrawer.classList.contains('active') ? 'hidden' : '';
+        });
+
+        mobileLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('open');
+            mobileDrawer.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        });
+
+        // Close mobile drawer on background click
+        document.addEventListener('click', (e) => {
+          if (mobileDrawer.classList.contains('active') && !mobileDrawer.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            mobileMenuToggle.classList.remove('open');
+            mobileDrawer.classList.remove('active');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
